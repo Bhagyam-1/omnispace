@@ -1,21 +1,16 @@
 import React from 'react'
-import { temp } from '../_utils/config';
 import { NewsArticleI } from '../_utils/types';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { ExternalLink } from 'lucide-react';
 import SimilarNews from '../_components/related-news/related-news';
 import TopNews from '../_components/top-news/top-news';
-import { getNewsById } from '@/actions/news';
 import PageHeader from '@/components/shared/page-header/page-header';
+import { getNewsById } from '@/actions/omninews/news';
 
 const ArticlePage = async({params}: {params: Promise<{id: string}>}) => {
-    const article: NewsArticleI = await new Promise((resolve, reject) => {
-        resolve(temp[1]);
-    })
-
-    // const {id} = await params;
-    // const article: NewsArticleI = await getNewsById(id);
+    const {id} = await params;
+    const article: NewsArticleI = await getNewsById(id);
 
   return (
     <section className='w-full my-16' aria-labelledby='article'>

@@ -1,6 +1,4 @@
-import { getAllNews, getDashboardNews, getTopNews } from '@/actions/news';
 import { NewsArticleI } from './_utils/types';
-import { temp } from './_utils/config';
 import SearchNews from './_components/news-dashboard/search-news';
 import LoadMoreTrigger from './_components/news-dashboard/load-more-trigger';
 import NewsArticles from './_components/news-dashboard/news-articles';
@@ -9,8 +7,9 @@ import NewsArticles from './_components/news-dashboard/news-articles';
 //   resolve(temp)
 // });
 
-const NewsPage = async({searchParams}: {searchParams: { [key: string]: string | string[] | undefined }}) => {
-  let page = 1, newsArticles: NewsArticleI[] = [];
+const NewsPage = async({searchParams}: {searchParams: Promise<{ [key: string]: string | string[] | undefined }>}) => {
+  const page = 1;
+  const newsArticles: NewsArticleI[] = [];
   const {categories, region, language, search} = await searchParams;
 
   // const fetchNews = async () => {
@@ -27,11 +26,17 @@ const NewsPage = async({searchParams}: {searchParams: { [key: string]: string | 
   // await fetchNews();
 
   return (
-    <section className="flex flex-col gap-8 w-full my-8">
+    <section className="flex flex-col gap-8 w-full my-8">   
       <SearchNews />
       <div  className="sm:bg-muted/30 p-0 sm:p-2 md:p-4 rounded-lg">
         <NewsArticles newsArticles={newsArticles}/>
-        <LoadMoreTrigger page={page} region={region as string} language={language as string} categories={categories as string} search={search as string}/>
+        <LoadMoreTrigger 
+          page={page} 
+          region={region as string} 
+          language={language as string} 
+          categories={categories as string} 
+          search={search as string}
+        />
       </div>
     </section>
   )

@@ -1,16 +1,16 @@
 import React from 'react';
 import { NewsArticleI } from '../../_utils/types';
-import { getSimilarNews } from '@/actions/news';
+import { getSimilarNews } from '@/actions/omninews/news';
 import SmallNewsCard from '../news-cards/small-news-card';
 import { Separator } from '@/components/ui/separator';
-import { similarNewsHardCoded } from '../../_utils/config';
+// import { similarNewsHardCoded } from '../../_utils/config';
 
 const RelatedNews = async({article}: {article: NewsArticleI}) => {
-    // const {meta: paginationDetails, data: relatedNews}: {meta: any, data: NewsArticleI[]} = await getSimilarNews(article.uuid);
+    const {data: relatedNews}: {data: NewsArticleI[]} = await getSimilarNews(article.uuid);
 
-    const relatedNews: NewsArticleI[] = await new Promise((resolve, reject) => {
-        resolve(similarNewsHardCoded);
-    })
+    // const relatedNews: NewsArticleI[] = await new Promise((resolve, reject) => {
+    //     resolve(similarNewsHardCoded);
+    // })
     
     return (
         <aside className='md:col-span-1 sm:bg-muted/30 sm:p-4 rounded-lg' aria-labelledby='related-news'>

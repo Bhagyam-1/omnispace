@@ -1,6 +1,27 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+html {
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 12px;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -42,6 +63,11 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --color-secondary-background: var(--secondary-background);
+}
+
+@theme {
+  --breakpoint-xss: 270px;
+  --breakpoint-xs: 475px;
 }
 
 :root {

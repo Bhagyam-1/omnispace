@@ -1,16 +1,16 @@
 import React from 'react'
 import { NewsArticleI } from '../../_utils/types';
-import { getTopNews } from '@/actions/news';
+import { getTopNews } from '@/actions/omninews/news';
 import { Separator } from '@/components/ui/separator';
 import SmallNewsCard from '../news-cards/small-news-card';
-import { tempTopNews } from '../../_utils/config';
+// import { tempTopNews } from '../../_utils/config';
 
 const TopNews = async() => {
-    // const {meta: paginationDetails, data: topNews}: {meta: any, data: NewsArticleI[]} = await getTopNews();
+    const {data: topNews}: {data: NewsArticleI[]} = await getTopNews();
     
-    const topNews: NewsArticleI[] = await new Promise((resolve, reject) => {
-        resolve(tempTopNews);
-    })
+    // const topNews: NewsArticleI[] = await new Promise((resolve, reject) => {
+    //     resolve(tempTopNews);
+    // })
 
   return (
         topNews.length > 0 ? (

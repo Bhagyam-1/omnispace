@@ -4,7 +4,7 @@ import React from 'react'
 
 const Hero = () => {
   return (
-    <section className="container mx-auto px-4 pb-24">
+    <section className="container mx-auto px-4 pb-24" aria-labelledby="hero">
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-16 justify-center px-4 pt-8 lg:pt-0">
             <div className="flex flex-wrap lg:flex-nowrap content-center flex-col gap-8">
                 <Badge
@@ -14,7 +14,7 @@ const Hero = () => {
                     One app, endless possibilities
                 </Badge>
 
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary leading-tight">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary leading-tight" id="hero">
                     Everything you need,
                     <br />
                     <span className="gradient-title">all in one place</span>

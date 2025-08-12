@@ -12,17 +12,17 @@ const NewsCard = ({item}: {item: NewsArticleI}) => {
                     hover:border-border transition-colors transition-background duration-300">
                 <CardHeader>
                     {item.image_url ? (
-                        <img src={item.image_url} 
-                            height="200px" 
-                            width="200px" 
-                            alt={item.title} 
+                        <img src={item.image_url}
+                            height="200px"
+                            width="200px"
+                            alt={item.title}
                             className="object-cover h-44 sm:h-50 w-full rounded-md"
                         />
                     ) : (
-                        <Image src="/newspaper.png" 
-                            height={200} 
-                            width={200} 
-                            alt={item.title} 
+                        <Image src="/newspaper.png"
+                            height={200}
+                            width={200}
+                            alt={item.title}
                             className="object-cover h-44 sm:h-50 w-full rounded-md"
                         />
                     )}
@@ -42,8 +42,8 @@ const NewsCard = ({item}: {item: NewsArticleI}) => {
                             {
                                 item.categories?.map((category: string) => (
                                     <Badge 
-                                        variant="outline" 
-                                        key={category} 
+                                        variant="outline"
+                                        key={category}
                                         className="text-sm bg-secondary-background/30 text-secondary-foreground"
                                     >
                                         {category}

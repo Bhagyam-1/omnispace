@@ -5,11 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
-const Logo = ({showSidebar = false}: {showSidebar?: boolean}) => {
+const Logo = ({showSidebar = false, open = false}: {showSidebar?: boolean, open?: boolean}) => {
     const { resolvedTheme } = useTheme();
 
     return (
-        <Link href="/" className={`${showSidebar && "hidden md:inline-flex"} flex items-center`}>
+        <Link href="/" className={`${showSidebar && "mt-2 mb-12"} flex items-center`}>
             {
                 resolvedTheme ? (
                     <Image
@@ -26,7 +26,7 @@ const Logo = ({showSidebar = false}: {showSidebar?: boolean}) => {
                     <div className="h-10 w-10" />
                 )
             }
-            <span className="text-xl text-primary font-semibold hidden md:block">
+            <span className={`text-xl text-primary font-semibold ${!showSidebar && "hidden md:block"} ${showSidebar && !open && "opacity-0"}`}>
                 mnispace
             </span>
         </Link>

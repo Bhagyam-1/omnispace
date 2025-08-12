@@ -1,7 +1,8 @@
 export interface SidebarItemI {
-    title: string;
-    url?: string;
     icon: React.ComponentType<{ className?: string }>;
+    title?: string;
+    url?: string;
+    content?: React.ReactNode;
     defaultValue?: string;
     childItems?: SidebarItemI[];
     dropdownItems?: DropdownItemI[];

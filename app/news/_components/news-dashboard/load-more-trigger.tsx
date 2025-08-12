@@ -1,13 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import React from 'react'
 import IntersectionTrigger from './intersection-trigger';
-import { getDashboardNews } from '@/actions/news';
+import { getDashboardNews } from '@/actions/omninews/news';
 import { NewsArticleI } from '../../_utils/types';
 import { useState } from 'react';
 import NewsArticles from './news-articles';
-import { similarNewsHardCoded } from '../../_utils/config';
 
 const LoadMoreTrigger = ({page, region, language, categories, search}: {page: number, region: string, language: string, categories: string, search: string}) => {
     const [newsArticle, setNewsArticle] = useState<NewsArticleI[]>([]);
@@ -15,10 +13,10 @@ const LoadMoreTrigger = ({page, region, language, categories, search}: {page: nu
     
     
     const handleIntersect = async() => {
-      // const news = Array.from({length: 1}, (_, i) => getDashboardNews(region, language, categories, search, currentPage + i));
+      const news = Array.from({length: 1}, (_, i) => getDashboardNews(region, language, categories, search, currentPage + i));
       
-      // const results = await Promise.all(news);
-      const results = similarNewsHardCoded;
+      const results = await Promise.all(news);
+      // const results = similarNewsHardCoded;
 
       setNewsArticle(newsArticle => [...newsArticle, ...results.flat()]);
       setCurrentPage(currentPage + 1);

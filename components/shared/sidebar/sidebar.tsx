@@ -1,22 +1,26 @@
-import { SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, Sidebar, SidebarTrigger } from '@/components/ui/sidebar';
-import SideMenuContent from '../../../app/news/_components/shared/sidebar-menu-content';
-import { SidebarItemI } from '../../../app/news/_utils/types';
+"use client";
+
+import Logo from '@/components/layout/logo';
+import { SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, Sidebar } from '@/components/ui/sidebar';
+import { useSidebar } from '@/components/ui/sidebar';
 
 const PageSidebar = ({children}: {children: React.ReactNode}) => {
-  return (
-    <Sidebar collapsible="icon" className='overflow-y-auto'>
-        <SidebarContent>
-            <SidebarGroup>
-                <SidebarTrigger className='w-9 h-9 text-xl mt-4 mb-8' />
-                <SidebarGroupContent>
-                    <SidebarMenu>
-                        {children}
-                    </SidebarMenu>
-                </SidebarGroupContent>
-            </SidebarGroup>
-        </SidebarContent>
-    </Sidebar>
-  )
+    const { open, openMobile } = useSidebar();
+
+    return (
+        <Sidebar collapsible="icon" variant='inset' className='overflow-y-auto'>
+            <SidebarContent>
+                <SidebarGroup>
+                    <Logo showSidebar={true} open={open || openMobile} />
+                    <SidebarGroupContent>
+                        <SidebarMenu className='flex flex-col gap-4'>
+                            {children}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            </SidebarContent>
+        </Sidebar>
+    )
 }
 
 export default PageSidebar;

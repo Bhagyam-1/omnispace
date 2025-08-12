@@ -1,6 +1,9 @@
 import { currentUser } from "@clerk/nextjs/server";
+import dbConnect from "@/lib/mongodb";
+import User from "@/actions/omniconnect/users/userModel";
+import { UserI } from "@/app/connect/_utils/types";
 
-const getUserProfile = async() => {
+export const getUserProfile = async() => {
     const user = await currentUser();
 
     if(!user) {
@@ -14,4 +17,19 @@ const getUserProfile = async() => {
     return user;
 }
 
-export default getUserProfile;
+export const getChatUserProfile = async() => {
+    try {
+        const user = await getUserProfile();
+        const userId = user.id;
+
+        await dbConnect();
+        const userChatInfo = await User.findOne({ userId }).lean<UserI>();
+
+        if(!userChatInfo || !userChatInfo._id) {
+            throw new Error("Unauthorized: User not found");
+        }
+        return userChatInfo;
+    } catch (error) {
+        throw new Error("Failed to fetch user info");
+    }
+}

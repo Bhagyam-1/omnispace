@@ -16,7 +16,7 @@ const SearchNews = () => {
         return () => {
             clearTimeout(timer);
         }
-    }, [search])
+    }, [search, router])
     
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);

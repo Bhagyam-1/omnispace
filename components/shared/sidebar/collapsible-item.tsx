@@ -1,15 +1,15 @@
-import { SidebarItemI } from '@/app/news/_utils/types';
+
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { SidebarMenuButton, SidebarMenuSub, SidebarMenuSubItem } from '@/components/ui/sidebar';
+import { SidebarItemI } from '@/types/sidebar';
 import { useRouter } from 'next/navigation';
 
 const CollapsibleItem = ({item, searchParams}: {item: SidebarItemI, searchParams: URLSearchParams}) => {
   const router = useRouter();
 
   const updateChildItemValue = (value: string) => {
-    console.log(value);
     const params = new URLSearchParams(searchParams.toString());
-    params.set(item.title.toLowerCase(), value);
+    params.set(item.title!.toLowerCase(), value);
     router.push(`?${params.toString()}`);
   }
 

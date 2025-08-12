@@ -1,7 +1,7 @@
 import Hero from "./_components/hero";
 import ProductsListing from "./_components/products-listing";
 
-export default function Home() {
+const Home = async() => {
   return (
     <>
       <Hero />
@@ -9,3 +9,5 @@ export default function Home() {
     </>
   );
 }
+
+export default Home;

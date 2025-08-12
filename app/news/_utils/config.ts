@@ -1,4 +1,4 @@
-import { ArrowLeft, Award, Bot, Building2, Drama, ChartColumnStacked, CircleSmall, Languages, Earth, HeartPulse, Microscope, Vote, Salad, PlaneTakeoff } from "lucide-react";
+import { Award, Bot, Building2, Drama, ChartColumnStacked, CircleSmall, Languages, Earth, HeartPulse, Microscope, Vote, Salad, PlaneTakeoff } from "lucide-react";
 import { NewsArticleCategory, NewsArticleI } from "./types";
 
 const categories = [
@@ -121,11 +121,6 @@ const regions = [
 ];
 
 export const sidebarItems = [
-    {
-      title: "Back to Dashboard",
-      icon: ArrowLeft,
-      url: "/",
-    },
     {
       title: "Categories",
       icon: ChartColumnStacked,

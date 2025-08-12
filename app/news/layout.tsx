@@ -1,8 +1,9 @@
 import Header from '@/components/layout/header'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import React from 'react'
+import React, { Suspense } from 'react'
 import PageSidebar from '../../components/shared/sidebar/sidebar';
 import SideMenuContent from './_components/shared/sidebar-menu-content';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const NewsLayout = ({children}: {children: React.ReactNode}) => {
   return (
@@ -10,7 +11,9 @@ const NewsLayout = ({children}: {children: React.ReactNode}) => {
       <SidebarProvider>
         <div className="flex w-full">
           <PageSidebar>
-            <SideMenuContent />
+            <Suspense fallback={<Skeleton />}>
+              <SideMenuContent />
+            </Suspense>
           </PageSidebar>
           <SidebarInset>
             <Header showSidebar={true} />

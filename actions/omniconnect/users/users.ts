@@ -7,17 +7,15 @@ import { getAllConnections } from "../connections/connections";
 import { Types } from "mongoose";
 import { formatUsers } from "./users.service";
 import cloudinary from "@/actions/configs/cloudinary";
-import { NextResponse } from "next/server";
 import { LeanSearchUser } from "./user.type";
-import Connection from "../connections/connectionModel";
 import { areUsersFriends } from "../connections/connection.service";
-
+import { UserI } from "@/app/connect/_utils/types";
 
 export const getLoggedInUser = async() => {
     try {
         const user = await getUserProfile();
         await dbConnect();
-        let userInfo = await User.findOne({userId: user.id});
+        let userInfo = await User.findOne({userId: user.id}).lean<UserI>();
         
         const firstName = user.firstName || user.emailAddresses[0].emailAddress.split("@")[0];
         const lastName = user.lastName || "";
@@ -35,16 +33,19 @@ export const getLoggedInUser = async() => {
             userInfo = newUser.toObject();
         }
 
-        return {
-            _id: userInfo._id.toString(),
-            userId: userInfo.userId,
-            userName: userInfo.userName,
-            name: userInfo.name,
-            email: userInfo.email,
-            image: userInfo.image,
-            bio: userInfo.bio
-        };
-    } catch (error) {
+        if(userInfo) {
+            return {
+                _id: userInfo._id?.toString(),
+                userId: userInfo.userId,
+                userName: userInfo.userName || "",
+                name: userInfo.name,
+                email: userInfo.email,
+                image: userInfo.image,
+                bio: userInfo.bio
+            }
+        }
+    }
+    catch (error) {
         throw new Error("Failed to fetch user info");
     }
 }
@@ -103,9 +104,10 @@ export const updateUserProfile = async(formData: FormData) => {
             }
         }
 
-        await User.findByIdAndUpdate(userId, content, { new: true });
+        const updatedUser = await User.findByIdAndUpdate(userId, content, { new: true });
         
         return {
+            user: updatedUser,
             message: "User profile updated successfully"
         }
     } catch (error) {
@@ -124,10 +126,10 @@ export const getUserByUserName = async(userName: string) => {
 
         const searchedUser = await User.findOne({ userName }).select("_id name userName image").lean<LeanSearchUser>();
 
-        const connection = await areUsersFriends(user._id, searchedUser?._id || "");
+        const connection = await areUsersFriends(user._id, new Types.ObjectId(searchedUser?._id));
 
         if(searchedUser) {
-            searchedUser._id = searchedUser?._id?.toString();
+            searchedUser._id = searchedUser?._id;
             return { user: searchedUser, isLoggedInUser: false, isFriend: connection };
         }
 
@@ -140,7 +142,7 @@ export const getUserByUserName = async(userName: string) => {
 export const getNotConnectedUsers = async(page: number, limit: number, search: string = "") => {
     try {
         const user = await getChatUserProfile();
-        const userId = user._id.toString();
+        const userId = user._id;
 
         await dbConnect();
 
@@ -155,13 +157,14 @@ export const getNotConnectedUsers = async(page: number, limit: number, search: s
 
         const connections = Array.from(hasConnections)
         .map((id) => new Types.ObjectId(id));
-        
+
+        connections.push(new Types.ObjectId(userId));
+
         const skip = (page - 1) * limit;
-        
+
         const rawNotConnectedUsers = await User.find({
             $and: [
                 { _id: { $nin: connections } },
-                { userId: { $ne: userId } },
                 { name: { $regex: search, $options: "i" } }
             ]
         })
@@ -176,3 +179,5 @@ export const getNotConnectedUsers = async(page: number, limit: number, search: s
         throw new Error("Failed to fetch not connected users");
     }
 }
+
+export { getChatUserProfile };

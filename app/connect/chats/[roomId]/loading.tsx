@@ -1,4 +1,4 @@
-import ChatLoading from "../@chat/[id]/loading";
+import ChatLoading from "../@chat/[roomId]/loading";
 
 
 const FriendChatLoading = () => {

@@ -1,13 +1,13 @@
 import { models, model, Schema } from "mongoose";
 
-const conenctionSchema = new Schema({
+const connectionSchema = new Schema({
     fromUserId: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: "User"
     },
     toUserId: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: "User"
     },
@@ -23,6 +23,6 @@ const conenctionSchema = new Schema({
     timestamps: true
 });
 
-const Connection = models.Connection || model("Connection", conenctionSchema);
+const Connection = models.Connection || model("Connection", connectionSchema);
 
 export default Connection;

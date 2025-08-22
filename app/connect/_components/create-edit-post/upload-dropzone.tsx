@@ -12,7 +12,7 @@ interface UploadDropzoneProps {
 
 const UploadDropzone: React.FC<UploadDropzoneProps> = ({
   onFileAccepted,
-  size = "h-96 w-full",
+  size = "h-96 md:h-88 w-full",
   isCircular = false,
   iconSize = "w-24 h-24",
 }) => {

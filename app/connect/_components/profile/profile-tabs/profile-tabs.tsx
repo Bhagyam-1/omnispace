@@ -33,7 +33,7 @@ const ProfileTabs = ({userName, isSearchedUser}: ProfileTabsProps) => {
             tabsInfo.map((tab) => (
                 <QueryProvider key={tab.value}>
                     <TabsContent value={tab.value}>
-                        <div className='grid grid-cols-3 gap-2 py-8'>
+                        <div className='grid grid-cols-2 xs:grid-cols-3 gap-2 py-8'>
                             <ProfileTabContent tab={tab} activeTab={activeTab} 
                             userName={userName} isSearchedUser={isSearchedUser} />
                         </div>

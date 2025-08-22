@@ -2,27 +2,31 @@ import mongoose from "mongoose";
 import Post from "../posts/postModel";
 import { getChatUserProfile } from "@/actions/profile";
 import PostLike from "./postLikeModel";
+import { Types } from "mongoose";
 
 export const updatePostLikes = async (postId: string, isPostLiked: boolean) => {
-    console.log(postId, isPostLiked);
     const session = await mongoose.startSession();
+
     try {
         const user = await getChatUserProfile();
+        const userId = user._id;
+
+        const postIdObjectId = new Types.ObjectId(postId);
         session.startTransaction();
 
         const likedData = {
-            postId,
-            userId: user._id.toString()
+            postId: postIdObjectId,
+            userId
         }
-        
+
         if (isPostLiked) {
             await PostLike.create([likedData], { session });
         } else {
             await PostLike.deleteOne(likedData, { session });
         }
-        
+
         await Post.findByIdAndUpdate(
-            postId,
+            postIdObjectId,
             [
                 {
                     $set: {

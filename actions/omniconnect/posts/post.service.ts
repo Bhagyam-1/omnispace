@@ -1,7 +1,7 @@
 import cloudinary from '@/actions/configs/cloudinary';
 import { PostContentI, PostType } from '@/app/connect/_utils/types';
 import PostLike from '../postLikes/postLikeModel';
-import { ObjectId } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import SavedPost from '../saved-posts/saved-posts.model';
 
 export const extractPostContent = async (formData: FormData): Promise<PostContentI> => {
@@ -49,7 +49,7 @@ export const setTextPost = async (text: string): Promise<PostContentI> => {
     }
 }
 
-export const getUserLikesFromPosts = async (postIds: ObjectId[], userId: string) => {
+export const getUserLikesFromPosts = async (postIds: ObjectId[], userId: Types.ObjectId) => {
     const userLikes = await PostLike.find({ 
         userId: userId, 
         postId: { $in: postIds }
@@ -60,7 +60,7 @@ export const getUserLikesFromPosts = async (postIds: ObjectId[], userId: string)
     return likedPostIdSet;
 }
 
-export const getUserSavesFromPosts = async (postIds: ObjectId[], userId: string) => {
+export const getUserSavesFromPosts = async (postIds: ObjectId[], userId: Types.ObjectId) => {
     const userSaves = await SavedPost.find({
         savedUserId: userId,
         postId: { $in: postIds }

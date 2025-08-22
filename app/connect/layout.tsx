@@ -6,12 +6,18 @@ import SidebarContent from './_components/sidebar/sidebar-content';
 import { Toaster } from 'sonner';
 import { getLoggedInUser } from '@/actions/omniconnect/users/users';
 import CompleteUserProfile from './_components/shared/complete-user-profile';
+import { getSocket } from './_utils/socket';
+import UserInfoStorage from './_components/shared/user-info-storage';
 
 const ChatLayout = async({children}: {children: React.ReactNode}) => {
   const user = await getLoggedInUser();
+  if(!user) return null;
+
+  getSocket();
 
   return (
     <>
+      <UserInfoStorage user={user} />
       <SidebarProvider>
         <div className="flex w-full">
           <PageSidebar>

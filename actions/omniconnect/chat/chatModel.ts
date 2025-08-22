@@ -1,8 +1,13 @@
-import { model, models, Schema } from "mongoose";
+import { model, models, Schema, Document, Model, Types } from "mongoose";
+import { IChat, IFormattedMessage, IUserRef } from "./types";
 
-const messageSchema = new Schema({
+const chatSchema = new Schema<IChat>({
+    roomId: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
     senderId: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: "User"
     },
@@ -11,19 +16,12 @@ const messageSchema = new Schema({
         required: true
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    _id: true
 });
 
-const chatSchema = new Schema({
-    roomId: {
-        type: String,
-        required: true
-    },
-    messages: [messageSchema]
-}, {
-    timestamps: true
-});
+// Create and export the model
+const Chat = (models.Chat as Model<IChat>) || model<IChat>("Chat", chatSchema);
 
-const Chat = models.Chat || model("Chat", chatSchema);
-
+export type { IChat, IFormattedMessage, IUserRef };
 export default Chat;

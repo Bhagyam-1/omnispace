@@ -1,49 +1,81 @@
 "use server";
 
-import dbConnect from "@/lib/mongodb";
 import { getChatUserProfile } from "../../profile";
-import crypto from "crypto";
-import Chat from "@/actions/omniconnect/chat/chatModel";
+import Chat, { 
+    IChat,
+    type IFormattedMessage,
+    type IUserRef 
+} from "@/actions/omniconnect/chat/chatModel";
+import Room from "../room/roomModel";
+import { Types } from "mongoose";
 
-const generateRoomId = (userId: string, friendId: string) => {
-    const rawRoomId = [userId, friendId].sort().join('_');
-    const roomId = crypto.createHmac("sha26", process.env.HMAC_SECRET || "")
-                    .update(rawRoomId)
-                    .digest("hex");
-
-    return roomId;
-}
-
-export const sendMessage = async(friendId: string, newMessage: string) => {
+export const getChats = async (
+    roomId: string, 
+    page: number, 
+    limit: number
+): Promise<IFormattedMessage[] | null> => {
     try {
         const user = await getChatUserProfile();
+        
+        const room = await Room.findOne({ _id: new Types.ObjectId(roomId) }); 
 
-        if(!user._id) {
-            throw new Error("Unauthorized: User not found");
+        if (!room) {
+            throw new Error("Room not found");
         }
 
-        await dbConnect();
+        const roomMembers = room.members.map((memberId: Types.ObjectId) => memberId.toString());
 
-        const roomId = generateRoomId(user._id.toString(), friendId);
-
-        const message = {
-            senderId: user._id,
-            message: newMessage
+        if (!roomMembers.includes(user._id.toString())) {
+            throw new Error("Unauthorized: User not a member of this room");
         }
 
-        const chat = await Chat.findOneAndUpdate(
-            {roomId},
-            {
-                $setOnInsert: {
-                    roomId
+        const chats = await Chat.find({ roomId: new Types.ObjectId(roomId) })
+            .populate<{ messages: Array<{ senderId: IUserRef }> }>("senderId", "name image")
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .lean() as IChat[] | null;
+
+        if (!chats) {
+            return null;
+        }
+
+        return chats.map((chat: IChat) => {
+            const senderId = chat.senderId._id.toString();
+
+            return {
+                id: chat._id.toString(),
+                sender: {
+                    id: senderId,
+                    name: (chat.senderId as IUserRef).name,
+                    image: (chat.senderId as IUserRef).image
                 },
-                $push: {
-                    messages: message
-                }
-            },
-            {upsert: true, new: true}
-        )
+                message: chat.message,
+                isFriend: senderId === user._id.toString(),
+                createdAt: chat.createdAt,
+            }
+        });
     } catch (error) {
-        throw new Error("Failed to send message");
+        console.error("Error in getChats:", error);
+        throw new Error("Failed to get chats");
+    }
+};
+
+export const validateMessage = async (roomId: string) => {
+    try {
+        const room = await Room.findById(new Types.ObjectId(roomId));
+        const user = await getChatUserProfile();
+
+        if (!room) {
+            throw new Error("Room not found");
+        }
+
+        const roomMembers = room.members.map((memberId: Types.ObjectId) => memberId.toString());
+
+        if (!roomMembers.includes(user._id.toString())) {
+            throw new Error("Unauthorized: User not a member of this room");
+        }
+    } catch (error) {
+        console.error("Error in validateMessage:", error);
+        throw new Error("Failed to validate message");
     }
 }

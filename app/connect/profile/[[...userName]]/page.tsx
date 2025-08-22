@@ -41,7 +41,7 @@ const ProfilePage = async({params}: {params: Promise<{userName: string}>}) => {
             {
                 user ? (
                     <div className='flex flex-col sm:gap-8 gap-4'>
-                        <UserInfo user={user} isSearchedUser={isSearchedUser} isFriend={isFriend}/>
+                        <UserInfo user={user} isSearchedUser={isSearchedUser} />
                         {
                             (!isSearchedUser || isFriend) ? (
                                 <ProfileTabs userName={userName} isSearchedUser={isSearchedUser} />

@@ -1,6 +1,7 @@
+import { Types } from "mongoose";
 import Connection from "./connectionModel";
 
-export const areUsersFriends = async (userId: string, friendId: string) => {
+export const areUsersFriends = async (userId: Types.ObjectId, friendId: Types.ObjectId) => {
     const connection = await Connection.findOne({
         $and: [
             { $or: [{fromUserId: userId}, {toUserId: userId}] },

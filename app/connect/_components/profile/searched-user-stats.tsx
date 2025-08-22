@@ -3,11 +3,9 @@ import { Button } from '@/components/ui/button';
 
 interface SearchedUserStatsProps {
     userStats: number[];
-    isFriend: boolean;
 }
 
-const SearchedUserStats = ({userStats, isFriend}: SearchedUserStatsProps) => {
-    console.log(isFriend);
+const SearchedUserStats = ({userStats}: SearchedUserStatsProps) => {
     const stats = [
         { label: "Posts", count: userStats[0] },
         { label: "Friends", count: userStats[1] },

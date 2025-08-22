@@ -5,11 +5,17 @@ import React, { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { createPost, updatePost } from "@/actions/omniconnect/posts/post";
 import { toast } from "sonner";
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import UploadDropzone from "./upload-dropzone";
 import { PostI } from "../../_utils/types";
 
-const CreateEditPost = ({isNewPost = true, postInfo}: {isNewPost?: boolean, postInfo?: PostI}) => {
+interface CreateEditPostProps {
+    isNewPost?: boolean;
+    postInfo?: PostI;
+    onUpdatePost?: () => void;
+}
+
+const CreateEditPost = ({isNewPost = true, postInfo, onUpdatePost}: CreateEditPostProps) => {
     const [image, setImage] = useState<File | undefined>();
     const [text, setText] = useState<string>("");
     const [imageUrl, setImageUrl] = useState<string>("");
@@ -38,7 +44,7 @@ const CreateEditPost = ({isNewPost = true, postInfo}: {isNewPost?: boolean, post
         formData.append("text", text);
         
         const imageRemoved = (!image && !imageUrl && postInfo?.content?.image?.url) as boolean;
-        formData.append("imageRemoved", imageRemoved.toString());
+        formData.append("imageRemoved", imageRemoved?.toString());
 
         if(isNewPost) {
             await createNewPost(formData);
@@ -70,6 +76,7 @@ const CreateEditPost = ({isNewPost = true, postInfo}: {isNewPost?: boolean, post
             await updatePost(formData, postInfo as PostI);
             toast.success("Post updated successfully");
             resetState();
+            onUpdatePost?.();
         } catch (err) {
             if(err instanceof Error) {
                 toast.error(err.message);
@@ -88,11 +95,15 @@ const CreateEditPost = ({isNewPost = true, postInfo}: {isNewPost?: boolean, post
     }
 
     const isPostUpdated = () => {
-        const noContent = !text && !image;
+        const content = text || image;
         const isLoading = loading;
+        console.log(content, isLoading);
+        if(!content) {
+            return false;
+        }
     
         if (isNewPost) {
-            return noContent || isLoading;
+            return content && !isLoading;
         }
     
         const originalCaption = postInfo?.content?.image?.caption || "";
@@ -102,8 +113,19 @@ const CreateEditPost = ({isNewPost = true, postInfo}: {isNewPost?: boolean, post
         const hasTextChanged = text !== originalCaption && text !== originalText;
         const hasImageChanged = imageUrl !== originalImageUrl;
     
-        return noContent || isLoading || hasTextChanged || hasImageChanged;
+        return !isLoading && (hasTextChanged || hasImageChanged);
     };
+
+    const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        e.preventDefault();
+        setText(e.target.value);
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === " " || e.key === "Enter") {
+            e.stopPropagation();
+        }
+    }
 
     return (
         <div className="max-w-xl mx-auto p-6 space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-500">
@@ -132,7 +154,8 @@ const CreateEditPost = ({isNewPost = true, postInfo}: {isNewPost?: boolean, post
                 placeholder="What's on your mind?"
                 className="h-32 resize-none focus:ring-2 focus:ring-primary transition-all"
                 value={text}
-                onChange={(e) => setText(e.target.value)}
+                onChange={handleTextChange}
+                onKeyDown={handleKeyDown}
             />
 
             <Button
@@ -140,7 +163,11 @@ const CreateEditPost = ({isNewPost = true, postInfo}: {isNewPost?: boolean, post
                 disabled={!isPostUpdated()}
                 className="w-full transition-transform hover:scale-[1.02] active:scale-[0.98]"
             >
-                {isNewPost ? "Create Post" : "Update Post"}
+                {loading ? 
+                    isNewPost ? "Creating..." : "Updating..." : 
+                    isNewPost ? "Create Post" : "Update Post"
+                }
+                {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
             </Button>
         </div>
     )

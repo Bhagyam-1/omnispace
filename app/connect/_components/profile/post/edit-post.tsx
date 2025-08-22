@@ -3,15 +3,22 @@ import React from 'react'
 import { PostI } from '@/app/connect/_utils/types'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import CreateEditPost from '../../create-edit-post/create-edit-post'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { Edit } from 'lucide-react';
 
 const EditPost = ({postInfo}: {postInfo: PostI}) => {
+    const [open, setOpen] = useState(false);
+
+    const onUpdatePost = () => {
+        setOpen(false);
+    }
     
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-            <Button variant="link" className='flex items-center justify-start px-0 py-1 h-6 w-full cursor-pointer hover:no-underline'>
-                Edit
+            <Button variant="ghost" className='flex items-center justify-start h-6 w-full cursor-pointer hover:no-underline'>
+                <Edit /> Edit
             </Button>
         </DialogTrigger>
         <DialogContent>
@@ -21,7 +28,7 @@ const EditPost = ({postInfo}: {postInfo: PostI}) => {
                 Update the image or text of your post.
                 </DialogDescription>
             </DialogHeader>
-            <CreateEditPost isNewPost={false} postInfo={postInfo} />
+            <CreateEditPost isNewPost={false} postInfo={postInfo} onUpdatePost={onUpdatePost} />
         </DialogContent>
     </Dialog>
   )

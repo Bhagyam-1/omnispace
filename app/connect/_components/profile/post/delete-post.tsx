@@ -1,14 +1,20 @@
-import { AlertDialog, AlertDialogCancel, AlertDialogDescription, AlertDialogContent, AlertDialogTrigger, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogAction } from '@/components/ui/alert-dialog'
+import { AlertDialog, AlertDialogCancel, AlertDialogDescription, AlertDialogContent, AlertDialogTrigger, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import React from 'react'
+import React, { useState } from 'react'
 import { deletePost } from '@/actions/omniconnect/posts/post'
 import { toast } from 'sonner'
 import { PostI } from '@/app/connect/_utils/types'
+import { Loader2, Trash } from 'lucide-react';
 
 const DeletePost = ({post}: {post: PostI}) => {
+    const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
+    
     const deletePostHandler = async() => {
         try {
-            await deletePost(post)
+            setLoading(true);
+            await deletePost(post._id);
+            setOpen(false);
             toast.success("Post deleted successfully");
         } catch (error) {
             if(error instanceof Error) {
@@ -16,14 +22,16 @@ const DeletePost = ({post}: {post: PostI}) => {
             } else {
                 toast.error("Failed to delete post, please try again");
             }
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
-        <AlertDialog>
+        <AlertDialog open={open} onOpenChange={setOpen}>
             <AlertDialogTrigger asChild>
-                <Button variant="link" className='flex items-center justify-start px-0 py-1 h-6 w-full cursor-pointer hover:no-underline'>
-                    Delete
+                <Button variant="ghost" className='flex items-center justify-start h-6 w-full cursor-pointer'>
+                    <Trash /> Delete
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -34,10 +42,11 @@ const DeletePost = ({post}: {post: PostI}) => {
                     This action cannot be undone. This will permanently delete your post.
                 </AlertDialogDescription>
                 <AlertDialogFooter>
-                    <AlertDialogCancel className='cursor-pointer'>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={deletePostHandler} className='cursor-pointer'>
-                        Delete
-                    </AlertDialogAction>
+                    <AlertDialogCancel className='cursor-pointer' disabled={loading} onClick={() => setOpen(false)}>Cancel</AlertDialogCancel>
+                    <Button onClick={deletePostHandler} className='cursor-pointer' disabled={loading}>
+                        {loading ? "Deleting..." : "Delete"}
+                        {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+                    </Button>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

@@ -1,11 +1,11 @@
 import React from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Bookmark } from 'lucide-react';
+import { Bookmark, BookmarkX } from 'lucide-react';
 import { toggleSavePostStatus } from '../../_services/feed-post.service';
 import { PostI } from '../../_utils/types';
 
-const SavePost = ({post}: {post: PostI}) => {
+const SavePost = ({post, showUnsaveBtn}: {post: PostI, showUnsaveBtn?: boolean}) => {
     const [isSaved, setIsSaved] = React.useState(post.hasUserSaved);
     
     const mutation = useMutation({
@@ -32,14 +32,24 @@ const SavePost = ({post}: {post: PostI}) => {
     }
 
     return (
-        <Button
-            variant="link"
-            onClick={onToggleSavePost}
-            className='cursor-pointer hover:text-input'
-        >
-            <Bookmark className={`!h-6 !w-6 ${isSaved && "fill-primary"}`} />
-        </Button>
+        showUnsaveBtn ? (
+                <Button
+                    variant="ghost"
+                    onClick={onToggleSavePost}
+                    className='flex items-center justify-start h-6 w-full cursor-pointer'
+                >
+                    <BookmarkX className='!h-5 !w-5' /> Unsave
+                </Button>
+            ) : (
+                <Button
+                    variant="link"
+                    onClick={onToggleSavePost}
+                    className='cursor-pointer hover:text-input'
+                >
+                    <Bookmark className={`!h-6 !w-6 ${isSaved && "fill-primary"}`} />
+                </Button>
+            )
     )
 }
 
-export default SavePost
+export default SavePost;

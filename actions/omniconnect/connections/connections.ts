@@ -2,11 +2,11 @@
 
 import Connection from "@/actions/omniconnect/connections/connectionModel";
 import { getChatUserProfile } from "../../profile";
-import { startSession, Types } from "mongoose";
-import User from "@/actions/omniconnect/users/userModel";
+import { Types } from "mongoose";
 import Post from "@/actions/omniconnect/posts/postModel";
 import { getUserByUserName } from "../users/users";
 import dbConnect from "@/lib/mongodb";
+import Room from "../room/roomModel";
 
 export const getFriends = async(page: number, limit: number, search: string) => {
     const skip = (page - 1) * limit;
@@ -14,10 +14,13 @@ export const getFriends = async(page: number, limit: number, search: string) => 
     
     try {
         const user = await getChatUserProfile();
-        const userId = user._id;
+        const userId = new Types.ObjectId(user._id);
 
         const friends = await Connection.find({
-            $or: [{fromUserId: userId}, {toUserId: userId}],
+            $or: [
+                { fromUserId: userId }, 
+                { toUserId: userId }
+            ],
             status: "accepted"
         })
         .populate("fromUserId", USER_SAFE_DATA)
@@ -55,7 +58,7 @@ export const getFriendRequests = async(page: number, limit: number, search: stri
 
     try {
         const user = await getChatUserProfile();
-        const userId = user._id;
+        const userId = new Types.ObjectId(user._id);
 
         const requests = await Connection.find({
             toUserId: userId,
@@ -78,20 +81,17 @@ export const getFriendRequests = async(page: number, limit: number, search: stri
 }
 
 export const sendFriendRequest = async(toUserId: string) => {
-    const session = await startSession();
-    
     try {
-        session.startTransaction();
-
         const user = await getChatUserProfile();
         const userId = user._id;
-
+        const toUserIdObj = new Types.ObjectId(toUserId);
+        
         const existingConnection = await Connection.findOne({
-            $and:[
-                { $or: [{fromUserId: toUserId}, {toUserId: userId}] }, 
-                { $or: [{fromUserId: userId}, {toUserId: toUserId}] }
+            $or: [
+                { fromUserId: userId, toUserId: toUserIdObj },
+                { fromUserId: toUserIdObj, toUserId: userId }
             ]
-        })
+        });
 
         if(existingConnection) {
             throw new Error("Connection already exists");
@@ -99,40 +99,20 @@ export const sendFriendRequest = async(toUserId: string) => {
 
         await Connection.create({
             fromUserId: userId,
-            toUserId,
+            toUserId: toUserIdObj,
             status: "pending"
         });
-
-        const friendRequestsCount = await Connection.countDocuments({
-            toUserId: userId,
-            status: "pending"
-        }).session(session);
-
-        await User.updateOne(
-            { userId },
-            {
-                requestsLength: friendRequestsCount
-            }
-        ).session(session);
         
-        await session.commitTransaction();
         return {
             message: "Friend request sent successfully"
         };
     } catch (error) {
-        session.abortTransaction();
         throw new Error("Failed to send friend request");
-    } finally {
-        session.endSession();
     }
 }
 
 export const updateConnection = async(connectionId: string, status: string) => {
-    const session = await startSession();
-
     try {
-        session.startTransaction();
-
         const user = await getChatUserProfile();
         const userId = user._id;
 
@@ -144,47 +124,48 @@ export const updateConnection = async(connectionId: string, status: string) => {
 
         const connection = await Connection.findOne({
             _id: new Types.ObjectId(connectionId),
-            $or: [{fromUserId: userId}, {toUserId: userId}]
-        }).session(session);
+            $or: [
+                { fromUserId: userId }, 
+                { toUserId: userId }
+            ]
+        });
 
         if(!connection) {
             throw new Error("Connection not found");
         }
 
+        const room = await Room.findOne({
+            members: {
+                $all: [
+                    { $elemMatch: { $eq: connection.fromUserId } },
+                    { $elemMatch: { $eq: connection.toUserId } }
+                ]
+            }
+        });
+
         if(
             ["rejected", "removed"].includes(status) || 
             connection.status === "blocked" && status !== "blocked"
         ) {
-            await connection.deleteOne({ session });
+            
+            if(room) {
+                await room.deleteOne();
+            }
+
+            await connection.deleteOne();
         } else {
             connection.status = status;
-            await connection.save({ session });
+            await connection.save();
         }
 
-        const friendRequestsCount = await Connection.countDocuments({
-            toUserId: userId,
-            status: "pending"
-        }).session(session);
+        if(status === "accepted" && !room) {
+            await Room.create({
+                members: [connection.fromUserId, connection.toUserId]
+            });
+        }
 
-        const friendsCount = await Connection.countDocuments({
-            $or: [{fromUserId: userId}, {toUserId: userId}],
-            status: "accepted"
-        }).session(session);
-
-        await User.updateOne(
-            { userId },
-            {
-                requestsLength: friendRequestsCount,
-                friendsLength: friendsCount
-            }
-        ).session(session);
-
-        await session.commitTransaction();
     } catch (error) {
-        session.abortTransaction();
         throw new Error("Failed to update connection");
-    } finally {
-        session.endSession();
     }
 }
 

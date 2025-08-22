@@ -7,7 +7,6 @@ interface SearchedUserStatsProps {
 }
 
 const SearchedUserStats = ({userStats, isFriend}: SearchedUserStatsProps) => {
-    console.log(isFriend);
     const stats = [
         { label: "Posts", count: userStats[0] },
         { label: "Friends", count: userStats[1] },

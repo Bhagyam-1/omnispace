@@ -2,12 +2,12 @@ import { model, models, Schema } from "mongoose";
 
 const postLikeSchema = new Schema({
     userId: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: "User"
     },
     postId: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: "Post"
     }

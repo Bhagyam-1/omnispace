@@ -11,6 +11,8 @@ import { ObjectId } from "mongoose";
 export const getPosts = async () => {
     try {
         const user = await getChatUserProfile();
+        const userId = user._id;
+
         const posts = await Post.find()
             .populate("userId", ["userName", "image"])
             .sort({ createdAt: -1 })
@@ -18,8 +20,8 @@ export const getPosts = async () => {
         
         const postIds = posts.map(post => post._id);
 
-        const likedPostIdSet = await getUserLikesFromPosts(postIds as ObjectId[], user._id);
-        const savedPostIdSet = await getUserSavesFromPosts(postIds as ObjectId[], user._id);
+        const likedPostIdSet = await getUserLikesFromPosts(postIds as ObjectId[], userId);
+        const savedPostIdSet = await getUserSavesFromPosts(postIds as ObjectId[], userId);
 
         const enrichedPosts = posts.map(post => {
             post.user = {
@@ -63,28 +65,28 @@ export const getUserSpecificPosts = async (userName?: string) => {
         }
         
         const posts = await Post.find({ userId })
-            .populate("userId", ["userName", "image"])
+            .populate("userId", ["_id", "userName", "image"])
             .sort({ createdAt: -1 })
             .lean();
             
         const postIds = posts.map(post => post._id);
 
-        const likedPostIdSet = await getUserLikesFromPosts(postIds as ObjectId[], user._id);
-        const savedPostIdSet = await getUserSavesFromPosts(postIds as ObjectId[], user._id);
+        const likedPostIdSet = await getUserLikesFromPosts(postIds as ObjectId[], userId);
+        const savedPostIdSet = await getUserSavesFromPosts(postIds as ObjectId[], userId);
 
         const plainPosts = posts.map(post => {
-            delete post.userId;
             const hasUserLiked = likedPostIdSet.has(post?._id?.toString());
             const hasUserSaved = savedPostIdSet.has(post?._id?.toString());
-
+            
             return {
-                ...post,
                 _id: (post._id as ObjectId).toString(),
                 user: {
                     ...post?.userId,
                     _id: post?.userId?._id?.toString()
                 },
-                userId: undefined,
+                content: post.content,
+                likes: post.likes,
+                comments: post.comments,
                 hasUserLiked,
                 hasUserSaved
             }
@@ -103,11 +105,12 @@ export const getUserSpecificPosts = async (userName?: string) => {
 export const createPost = async (formData: FormData) => {
     try {
         const user = await getChatUserProfile();
+        const userId = user._id;
 
         let content = await extractPostContent(formData);
-
+        console.log(userId);
         await Post.create({
-            userId: user._id,
+            userId,
             content,
         })
     } catch (error) {
@@ -153,21 +156,28 @@ export const updatePost = async (formData: FormData, postInfo: PostI) => {
     }
 }
 
-export const deletePost = async (post: PostI) => {
+export const deletePost = async (postId: string) => {
     try {
         const user = await getChatUserProfile();
         const userId = user._id;
+        const post = await Post.findById(postId);
+        
+        if(!post || !post?._id) {
+            throw new Error("Post not found");
+        }
 
-        if(post.user._id.toString() !== userId.toString()) {
+        if(post?.userId?.toString() !== userId?.toString()) {
             throw new Error("Unauthorized: You are not authorized to delete this post");
         }
 
-        if(post.content?.image) {
-            await cloudinary.uploader.destroy(post.content.image.id);
+        if(post?.content?.image && post?.content?.image?.id) {
+            await cloudinary.uploader.destroy(post?.content?.image?.id);
         }
 
         await Post.findByIdAndDelete(post._id);
     } catch (error) {
+        console.log(error);
+        
         if(error instanceof Error) {
             throw new Error(error.message);
         }

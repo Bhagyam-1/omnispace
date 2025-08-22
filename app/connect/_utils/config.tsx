@@ -15,9 +15,9 @@ export const sidebarItems: SidebarItemI[] = [
         content: <SearchContent />
     },
     {
-        title: "Messages",
+        title: "Chats",
         icon: MessageCircleMore,
-        url: "/connect/messages",
+        url: "/connect/chats",
     },
     {
         title: "Friends",

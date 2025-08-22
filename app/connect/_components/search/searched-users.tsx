@@ -36,10 +36,17 @@ const SearchedUsers = ({users, removeUser}: SearchedUsersPropsI) => {
             <Link href={`/connect/profile/${user.userName}`} className='flex items-center gap-4'>
               {
                 user.image ? (
-                  <img src={user.image} alt="User" className='h-12 w-12 rounded-full object-cover' />
+                  <Image src={user.image} alt="User"
+                    className='h-12 w-12 rounded-full object-cover'
+                    width={48}
+                    height={48}
+                  />
                 ) : (
-                  <Image src="/profile.jpg" alt="Profile" width={20} height={20} 
-                  className='w-12 h-12 rounded-full object-cover' />
+                  <Image src="/profile.jpg" alt="Profile"
+                    className='h-12 w-12 rounded-full object-cover'
+                    width={48}
+                    height={48}
+                  />
                 )
               }
               <h2 className='text-md font-semibold line-clamp-1'>{user.userName}</h2>

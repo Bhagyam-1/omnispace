@@ -7,7 +7,7 @@ export const getDashboardNews = async (country="us", language="en", category="",
             getAllNews(language, category, search, page),
             getTopNews(country, language, category, search, page)
         ])
-        console.log(`dashboardNews`, dashboardNews);
+        
         if (!dashboardNews) {
             throw new Error("Failed to fetch news");
         }

@@ -1,6 +1,7 @@
 import { getChatUserProfile } from "@/actions/profile";
 import SavedPost from "./saved-posts.model";
 import Post from "../posts/postModel";
+import { Types } from "mongoose";
 
 export const getSavedPosts = async () => {
     try {
@@ -39,21 +40,29 @@ export const toggleSavePost = async(postId: string) => {
         const userId = user._id;
 
         const post = Post.findById(postId);
+        const postIdObjectId = new Types.ObjectId(postId);
 
         if(!post) {
             throw new Error("Post not found");
         }
 
-        const savedPost = await SavedPost.findOne({savedUserId: userId, postId});
+        const savedPost = await SavedPost.findOne({
+            savedUserId: userId,
+            postId: postIdObjectId
+        });
 
         if(savedPost) {
             await SavedPost.findByIdAndDelete(savedPost._id);
+
             return {
                 message: "Post removed from saved posts"
             }
         }
 
-        await SavedPost.create({savedUserId: userId, postId});
+        await SavedPost.create({
+            savedUserId: userId,
+            postId: postIdObjectId
+        });
 
         return {
             message: "Post saved successfully"

@@ -14,7 +14,7 @@ export interface FriendRequestI {
 
 export interface UserI {
     _id: string,
-    userId?: string,
+    userId: string,
     userName: string,
     name: string,
     bio?: string,
@@ -63,4 +63,24 @@ export interface CommentsI {
 export enum PostType {
     TEXT = "text",
     IMAGE = "image"
+}
+
+export interface RoomI {
+    id: string;
+    name: string;
+    isGroup: boolean;
+    members: string[];
+    roomImage?: string;
+}
+
+export interface IFormattedMessage {
+    id: string;
+    sender: {
+        id: string;
+        name: string;
+        image?: string;
+    };
+    message: string;
+    createdAt?: Date;
+    isFriend?: boolean;
 }

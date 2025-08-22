@@ -4,9 +4,7 @@ import React from 'react'
 const ProfileTabLoader = () => {
     return (
         Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className='w-full aspect-[1]'>
-                <Skeleton className='h-full rounded-md' />
-            </div>
+            <Skeleton key={index} className='h-48 xs:h-60 lg:h-72 xl:h-88 w-full rounded-md' />
         ))
     )
 }

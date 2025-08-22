@@ -47,8 +47,8 @@ const ProfileTabContent = ({tab, activeTab, userName, isSearchedUser}: ProfileTa
         tabDataMap[tab.value].length ? 
             tabDataMap[tab.value].map((post: PostI) => {
                 return (
-                    <section id={tab.value} key={post._id} className='relative h-fit group'>
-                        <PostCard post={post} isSearchedUser={isSearchedUser} />
+                    <section id={tab.value} key={post._id} className='relative h-48 xs:h-60 lg:h-72 xl:h-88 group'>
+                        <PostCard post={post} isSearchedUser={isSearchedUser} activeTab={activeTab} />
                     </section>
                 )
             }) : 

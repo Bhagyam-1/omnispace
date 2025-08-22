@@ -1,25 +1,28 @@
 import { getChatUserProfile } from "@/actions/profile";
 import PostComment from "./postCommentModel";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import Post from "../posts/postModel";
 import { fetchPostComments, validatePost, } from "./post-comment.service";
 
-export const updatePostComment = async (postId: string, comment: string) => {
+export const addCommentToPost = async (postId: string, comment: string) => {
     const session = await mongoose.startSession();
     try {
         const user = await getChatUserProfile();
         const userId = user._id;
-        
+        session.startTransaction();
+
+        const postObjectId = new Types.ObjectId(postId);
+
         await PostComment.create([
             {
                 userId,
-                postId,
+                postId: postObjectId,
                 comment
             }
         ], { session });
 
-        await Post.findByIdAndUpdate(postId, {
-            $inc: { commentsCount: 1 }
+        await Post.findByIdAndUpdate(postObjectId, {
+            $inc: { comments: 1 }
         }, { session });
 
         await session.commitTransaction();
@@ -29,8 +32,11 @@ export const updatePostComment = async (postId: string, comment: string) => {
         };
     } catch (error) {
         console.log(error);
-        session.abortTransaction();
         
+        if (session.inTransaction()) {
+            await session.abortTransaction();
+        }
+
         throw new Error("Failed to comment on post");
     } finally {
         session.endSession();
@@ -39,9 +45,10 @@ export const updatePostComment = async (postId: string, comment: string) => {
 
 export const getPostComments = async (postId: string) => {
     try {
-        await validatePost(postId);
+        const postObjectId = new Types.ObjectId(postId);
+        await validatePost(postObjectId);
 
-        const comments = await fetchPostComments(postId);
+        const comments = await fetchPostComments(postObjectId);
         return comments;
     } catch (error) {
         console.log(error);

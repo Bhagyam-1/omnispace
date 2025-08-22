@@ -1,3 +1,5 @@
+"use client";
+
 import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -6,6 +8,7 @@ import { checkUserNameAvailability, updateUserProfile } from '@/app/connect/_ser
 import UserProfileActions from './user-profile-actions';
 import { Check, Pencil, Trash, X } from 'lucide-react';
 import Image from 'next/image';
+import { setUserInfo } from '@/app/connect/_services/storage.service';
 
 interface UserProfileBodyProps {
     user: UserI;
@@ -86,7 +89,8 @@ const UserProfileBody = ({user, setOpen}: UserProfileBodyProps) => {
             formData.append("image", image);
         }
 
-        await updateUserProfile(formData);
+        const updatedUserInfo = await updateUserProfile(formData);
+        setUserInfo(updatedUserInfo);
     }
 
     const handleButtonClick = () => {

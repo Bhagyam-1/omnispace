@@ -1,26 +1,23 @@
-import React from 'react'
-import { Card, CardContent, CardFooter } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { FrownIcon } from 'lucide-react'
-import Link from 'next/link'
+import { UserRoundX } from 'lucide-react';
+import React from 'react';
 
 const NoFriend = () => {
     return (
         <div className='flex items-center justify-center h-full'>
-            <Card className="flex justify-center items-center w-fit h-fit mx-auto">
-                <CardContent className="flex flex-col gap-4 justify-center items-center w-fit p-8 rounded-lg">
-                    <FrownIcon className="w-16 h-16 text-primary" />
-                    <div className="flex flex-col gap-2 text-center">
-                        <h2 className="text-primary text-2xl">No friends found</h2>
-                        <p className="text-primary">Don&apos;t worry, start making new friends by searching for users</p>
+            <div className="flex justify-center items-center w-fit h-fit mx-auto">
+                <div className="flex flex-col gap-4 justify-center items-center w-fit p-8 rounded-lg">
+                    <UserRoundX className="w-16 h-16 text-muted-foreground" />
+                    <div className="flex flex-col gap-4 text-center">
+                        <h2 className="text-muted-foreground text-2xl">No friends found</h2>
+                        <p className="text-muted-foreground text-lg italic">(Don&apos;t worry, start making new friends by searching for users)</p>
                     </div>
-                </CardContent>
-                <CardFooter className="w-full">
+                </div>
+                {/* <CardFooter className="w-full">
                     <Button variant="outline" asChild className='w-full'>
                         <Link href="/connect/search">Search users</Link>
                     </Button>
-                </CardFooter>
-            </Card>
+                </CardFooter> */}
+            </div>
         </div>
     )
 }

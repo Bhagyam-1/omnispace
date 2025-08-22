@@ -2,12 +2,12 @@ import { model, models, Schema } from "mongoose";
 
 const postCommentSchema = new Schema({
     userId: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: "User"
     },
     postId: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: "Post"
     },
@@ -19,7 +19,7 @@ const postCommentSchema = new Schema({
     timestamps: true
 });
 
-postCommentSchema.index({ userId: 1, postId: 1 }, { unique: true });
+postCommentSchema.index({ userId: 1, postId: 1 });
 postCommentSchema.index({ postId: 1 });
 
 const PostComment = models.PostComment || model("PostComment", postCommentSchema);

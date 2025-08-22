@@ -5,6 +5,7 @@ import { CircleCheck, CircleX } from 'lucide-react'
 import { FriendRequestI } from '../../_utils/types';
 import { updateConnection } from '@/actions/omniconnect/connections/connections';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 interface FriendRequestCardPropsI {
     request: FriendRequestI;
@@ -60,7 +61,13 @@ const FriendRequestCard = ({request, removeUser}: FriendRequestCardPropsI) => {
             <Card className='bg-transparent sm:bg-card'>
                 <CardContent className='flex flex-col'>
                     <div className='flex gap-4 items-center'>
-                        <img src={request.image} alt={request.name} className='w-16 h-16 rounded-full' />
+                        <Image
+                            src={request.image}
+                            alt={request.name}
+                            className='w-16 h-16 rounded-full'
+                            width={64}
+                            height={64}
+                        />
                         <h2>{request.name}</h2>
                     </div>
                 </CardContent>

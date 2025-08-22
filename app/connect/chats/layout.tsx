@@ -2,8 +2,8 @@ import React from 'react'
 import QueryProvider from '../_utils/query-provider';
 
 const MessagesLayout = async(
-    {children, list, chat}: 
-    {children: React.ReactNode, list: React.ReactNode, chat: React.ReactNode}
+    {list, chat}: 
+    {list: React.ReactNode, chat: React.ReactNode}
 ) => {
 
     return (

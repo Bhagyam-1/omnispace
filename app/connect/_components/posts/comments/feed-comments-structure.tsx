@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { createCommentQueryOptions } from '../../../_services/feed-post.service';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Loader, MessageCircle } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import CommentsList from './comments-list';
 import MobileComments from './mobile-comments';

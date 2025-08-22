@@ -1,11 +1,10 @@
 import { validateMessage } from "@/actions/omniconnect/chat/chat";
-import { NextRequest } from "next/server";
 import { Server } from "socket.io";
 
 // 👇 Keep a global reference so it's not recreated on hot reloads
 const globalForIO = global as unknown as { io?: Server };
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   if (!globalForIO.io) {
     console.log("Starting Socket.io server...");
 

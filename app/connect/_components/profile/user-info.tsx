@@ -10,10 +10,9 @@ import SearchedUserStats from './searched-user-stats';
 interface UserInfoProps {
     user: UserI;
     isSearchedUser: boolean;
-    isFriend: boolean;
 }
 
-const UserInfo = async({user, isSearchedUser, isFriend}: UserInfoProps) => {
+const UserInfo = async({user, isSearchedUser}: UserInfoProps) => {
     const userStats = await Promise.all([
         getPostsLength(user.userName),
         getFriendsLength(user.userName),
@@ -52,7 +51,7 @@ const UserInfo = async({user, isSearchedUser, isFriend}: UserInfoProps) => {
                     <div className='hidden sm:flex'>
                         {
                             isSearchedUser ? (
-                                <SearchedUserStats userStats={userStats} isFriend={isFriend} />
+                                <SearchedUserStats userStats={userStats} />
                             ) : (
                                 <UserStats userStats={userStats} />
                             )
@@ -66,7 +65,7 @@ const UserInfo = async({user, isSearchedUser, isFriend}: UserInfoProps) => {
                 <Separator />
                 {
                     isSearchedUser ? (
-                        <SearchedUserStats userStats={userStats} isFriend={isFriend} />
+                        <SearchedUserStats userStats={userStats} />
                     ) : (
                         <UserStats userStats={userStats} />
                     )

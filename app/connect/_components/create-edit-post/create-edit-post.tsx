@@ -76,7 +76,7 @@ const CreateEditPost = ({isNewPost = true, postInfo, onUpdatePost}: CreateEditPo
             await updatePost(formData, postInfo as PostI);
             toast.success("Post updated successfully");
             resetState();
-            onUpdatePost && onUpdatePost();
+            onUpdatePost?.();
         } catch (err) {
             if(err instanceof Error) {
                 toast.error(err.message);

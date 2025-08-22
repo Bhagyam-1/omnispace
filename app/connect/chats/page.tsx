@@ -1,9 +1,8 @@
-import React from 'react'
-import FriendsListPage from './@list/page';
+import React from 'react';
 
-const MessagesPage = async ({params}: {params: Promise<{id: string}>}) => {
+const MessagesPage = async () => {
     return (
-        <FriendsListPage />
+        <></>
     )
 }
 

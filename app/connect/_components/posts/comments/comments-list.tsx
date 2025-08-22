@@ -1,29 +1,29 @@
 "use client";
 
-import IntersectionTrigger from "@/app/news/_components/news-dashboard/intersection-trigger";
+// import IntersectionTrigger from "@/app/news/_components/news-dashboard/intersection-trigger";
 import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CommentsI } from "@/app/connect/_utils/types";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { addCommentHandler, getComments } from "../../../_services/feed-post.service";
+import { addCommentHandler } from "../../../_services/feed-post.service";
 import Image from "next/image";
 import { getUserInfo } from "../../../_services/storage.service";
 
 const CommentsList = ({initialComments, postId}: {initialComments: CommentsI[], postId: string}) => {
     const [comments, setComments] = useState(initialComments || []);
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const isMobile = useIsMobile();
     const commentRef = useRef<HTMLInputElement>(null);
 
     const userInfo = getUserInfo();
     
-    const handleIntersect = async() => {
-        setLoading(true);
-        const newComments = await getComments(postId);
-        setComments([...comments, ...newComments]);
-        setLoading(false);
-    }
+    // const handleIntersect = async() => {
+    //     setLoading(true);
+    //     const newComments = await getComments(postId);
+    //     setComments([...comments, ...newComments]);
+    //     setLoading(false);
+    // }
 
     const addComment = async() => {
         const comment = commentRef.current?.value;
@@ -35,13 +35,9 @@ const CommentsList = ({initialComments, postId}: {initialComments: CommentsI[], 
             if(commentRef.current) commentRef.current.value = "";
 
             await addCommentHandler(postId, comment);
-        } catch (error) {
+        } catch {
             setComments((prev) => prev.filter((comment) => comment.id !== commentId));
         }
-    }
-
-    if(loading) {
-        return <></>
     }
 
     return (

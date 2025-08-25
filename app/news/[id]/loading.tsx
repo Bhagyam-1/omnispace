@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton";
 
-const NewsIdLoading = () => {
+const NewsIdLoader = () => {
     return (
         <section className='w-full mt-32' aria-labelledby='article'>
             <div className='grid grid-cols lg:grid-cols-3 gap-4 justify-center w-full'>
@@ -41,5 +41,5 @@ const NewsIdLoading = () => {
         </section>
     )
 }
-    
-export default NewsIdLoading;
+
+export default NewsIdLoader;

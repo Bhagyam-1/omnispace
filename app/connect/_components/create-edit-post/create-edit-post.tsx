@@ -97,7 +97,7 @@ const CreateEditPost = ({isNewPost = true, postInfo, onUpdatePost}: CreateEditPo
     const isPostUpdated = () => {
         const content = text || image;
         const isLoading = loading;
-        console.log(content, isLoading);
+
         if(!content) {
             return false;
         }

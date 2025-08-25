@@ -1,10 +1,10 @@
-import ChatLoading from "../@chat/[roomId]/loading";
+import ChatLoader from "../@chat/[roomId]/loading";
 
 
-const FriendChatLoading = () => {
+const FriendChatLoader = () => {
     return (
-        <ChatLoading />
+        <ChatLoader />
     )
 }
 
-export default FriendChatLoading;
+export default FriendChatLoader;

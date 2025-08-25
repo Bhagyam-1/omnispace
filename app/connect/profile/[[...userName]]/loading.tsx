@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton"
 
-const ProfileLoading = () => {
+const ProfileLoader = () => {
     return (
         <section className="flex flex-col gap-2 mt-8 mx-8">
             {
@@ -47,4 +47,4 @@ const ProfileLoading = () => {
     )
 }
 
-export default ProfileLoading;
+export default ProfileLoader;

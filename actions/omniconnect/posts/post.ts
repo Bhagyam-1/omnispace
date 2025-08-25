@@ -46,8 +46,6 @@ export const getPosts = async (page: number, limit: number) => {
             }
         })
 
-        console.log(enrichedPosts);
-
         return enrichedPosts;
     } catch (error) {
         if(error instanceof Error) {
@@ -112,7 +110,7 @@ export const createPost = async (formData: FormData) => {
         const userId = user._id;
 
         let content = await extractPostContent(formData);
-        console.log(userId);
+
         await Post.create({
             userId,
             content,

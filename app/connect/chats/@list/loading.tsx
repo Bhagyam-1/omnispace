@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-const FriendsListLoading = () => {
+const FriendsListLoader = () => {
     return (
         <div className="flex flex-col flex-1 gap-4 h-full border-r border-r-secondary md:w-fit pt-8">
             <Skeleton className="mx-4 w-[calc(100%-2rem)] lg:min-w-72 md:min-w-52 h-9" />
@@ -22,4 +22,4 @@ const FriendsListLoading = () => {
     )
 }
 
-export default FriendsListLoading;
+export default FriendsListLoader;

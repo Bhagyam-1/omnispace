@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const FeedLoading = () => {
+const FeedLoader = () => {
     return (
         <section className="flex flex-col items-center gap-8 p-0 xs:py-8">
             {
@@ -27,4 +27,4 @@ const FeedLoading = () => {
     )
 }
 
-export default FeedLoading;
+export default FeedLoader;

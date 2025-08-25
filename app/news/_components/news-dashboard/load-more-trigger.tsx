@@ -19,7 +19,7 @@ const LoadMoreTrigger = ({page, region, language, categories, search}: {page: nu
       // const results = similarNewsHardCoded;
 
       setNewsArticle(newsArticle => [...newsArticle, ...results.flat()]);
-      setCurrentPage(currentPage + 1);
+      setCurrentPage(currentPage => currentPage + 1);
     }
 
   return (

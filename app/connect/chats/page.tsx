@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import React from 'react';
 
 const MessagesPage = async () => {
@@ -6,4 +8,4 @@ const MessagesPage = async () => {
     )
 }
 
-export default MessagesPage
+export default MessagesPage;

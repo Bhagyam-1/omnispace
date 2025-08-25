@@ -3,4 +3,5 @@ export interface LeanSearchUser {
     name: string;
     userName: string;
     image: string;
+    bio: string;
 }

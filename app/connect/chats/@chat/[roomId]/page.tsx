@@ -15,7 +15,7 @@ const FriendParallelChatPage = async ({ params }: ChatPageProps) => {
 
     const roomId = roomParams.roomId;
     
-    const messages = await getChats(roomId, 1, 20); // Get first 20 messages
+    const messages = await getChats(roomId, 1, 20);
     
     return (
         <section className="flex flex-col gap-4 h-full w-full">

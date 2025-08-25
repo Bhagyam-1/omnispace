@@ -1,8 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import Link from 'next/link';
 import React from 'react';
-import { MessageCircle, UserMinus } from 'lucide-react';
+import { UserMinus } from 'lucide-react';
 import { FriendI } from '../../_utils/types';
 import { updateConnection } from '@/actions/omniconnect/connections/connections';
 import { toast } from 'sonner';
@@ -33,19 +32,19 @@ const FriendCard = ({friend, removeUser}: FriendCardPropsI) => {
             <Card key={friend.id} className='bg-transparent sm:bg-card flex'>
                 <CardContent className='flex flex-col'>
                     <div className='flex gap-4 items-center'>
-                        <Image src={friend.image} alt={friend.name} className='w-12 h-12 sm:w-16 sm:h-16 rounded-full' width={50} height={50} />
-                        <h2>{friend.name}</h2>
+                        <Image src={friend.image} alt={friend.userName} className='w-12 h-12 sm:w-16 sm:h-16 rounded-full' width={50} height={50} />
+                        <h2>{friend.userName}</h2>
                     </div>
                 </CardContent>
                 <CardFooter className='flex gap-4 justify-end'>
-                    <Button asChild size="lg" variant="outline" 
+                    {/* <Button asChild size="lg" variant="outline" 
                         className='flex gap-2 justify-center self-end cursor-pointer text-primary/60 hover:text-primary'
                     >
                         <Link href={`/connect/chats/${friend.id}`}>
                             <span className='hidden xss:block'>Message</span>
                             <MessageCircle />
                         </Link>
-                    </Button>
+                    </Button> */}
 
                     <Button size="lg" variant="outline" 
                         className='flex gap-2 justify-center self-end cursor-pointer text-red-500 hover:text-red-600'

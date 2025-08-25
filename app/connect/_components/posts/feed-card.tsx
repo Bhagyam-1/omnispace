@@ -9,7 +9,7 @@ import Image from 'next/image';
 const FeedCard = ({post}: {post: PostI}) => {
     return (
         <article className='flex justify-center w-full xs:px-4'>
-            <Card className='h-fit flex flex-col gap-3 bg-transparent border-0 w-full xs:w-fit'>
+            <Card className='h-fit flex flex-col gap-3 bg-transparent shadow-none border-0 w-full xs:w-fit'>
                 <CardHeader className='flex items-center gap-3 px-3 xs:px-6 w-full'>
                     <Link href={`/connect/profile/${post?.user?.userName}`} className='flex items-center gap-2'>
                         <Image 

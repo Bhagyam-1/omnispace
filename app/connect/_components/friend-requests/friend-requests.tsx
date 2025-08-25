@@ -1,31 +1,43 @@
 "use client";
 
-import React, { useEffect, useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import FriendRequestCard from './friend-request-card';
 import { getFriendRequests } from '@/actions/omniconnect/connections/connections';
 import IntersectionTrigger from '@/app/news/_components/news-dashboard/intersection-trigger';
+import useDebounce from '@/hooks/useDebounce';
+import { Loader } from 'lucide-react';
+import { toast } from 'sonner';
 
 const FriendRequests = ({initialRequests}: {initialRequests: any[]}) => {
+    const limit = 10;
+
     const [requests, setRequests] = useState(initialRequests);
-    const [lastPageRequestsLength, setLastPageRequestsLength] = useState(initialRequests.length);
     const [page, setPage] = useState(2);
     const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(false);
+    const lastPageRequestsLengthRef = useRef(initialRequests.length);
 
-    useEffect(() => {
-        const fetchRequests = async() => {
-            const newRequests = await getFriendRequests(page, 10, search);
-            setRequests((prev) => [...prev, ...newRequests]);
-            setLastPageRequestsLength(newRequests.length);
-        }
-        fetchRequests();
-    }, [page, search]);
+    useDebounce(search, 300, () => {
+        setPage(1);
+        fetchRequests(1);
+    });
 
-    const fetchRequests = () => {
-        if(lastPageRequestsLength < 10) {
+    const fetchRequests = async(page: number) => {
+        if(lastPageRequestsLengthRef.current < limit) {
             return;
         }
-        setPage((prev) => prev + 1)
+        try {
+            setLoading(true);
+            const newRequests = await getFriendRequests(page, limit, search);
+            setRequests((prev) => [...prev, ...newRequests]);
+            lastPageRequestsLengthRef.current = newRequests.length;
+            setPage((prev) => prev + 1);
+        } catch {
+            toast.error("Failed to fetch requests");
+        } finally {
+            setLoading(false);
+        }
     }
 
     const handleSearch = async(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +64,12 @@ const FriendRequests = ({initialRequests}: {initialRequests: any[]}) => {
                         )
                     }
                 </ul>
-                <IntersectionTrigger onIntersect={fetchRequests} />
+                <IntersectionTrigger onIntersect={() => fetchRequests(page)} />
+                {
+                    loading && (
+                        <Loader className="animate-spin" />
+                    )
+                }
             </div>
         </div>
     )

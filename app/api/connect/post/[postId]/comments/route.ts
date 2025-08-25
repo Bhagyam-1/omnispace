@@ -5,10 +5,15 @@ type Params = {
     params: Promise<{ postId: string }>
 }
 
-export const GET = async (_request: Request, {params}: Params) => {
+export const GET = async (request: Request, {params}: Params) => {
     try {
         const { postId } = await params;
-        const res = await getPostComments(postId);
+
+        const {searchParams} = new URL(request.url);
+        const page = Number(searchParams.get("page"));
+        const limit = Number(searchParams.get("limit"));
+
+        const res = await getPostComments(postId, page, limit);
         return NextResponse.json(res);
     } catch (err) {
         if(err instanceof Error) {

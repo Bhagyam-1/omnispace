@@ -1,8 +1,10 @@
 import { getChatUserProfile } from "@/actions/profile";
 import Room from "./roomModel";
+import { RoomI } from "@/app/connect/_utils/types";
+import { signSocketToken } from "@/lib/jwt";
 import { Types } from "mongoose";
 
-export const getRoomsList = async (page: number, limit: number, search: string) => {
+export const getRoomsList = async (page: number, limit: number, search: string): Promise<RoomI[]> => {
     const skip = (page - 1) * limit;
     try {
         const user= await getChatUserProfile();
@@ -15,18 +17,23 @@ export const getRoomsList = async (page: number, limit: number, search: string) 
                 }
             },
             {
-                $skip: skip
-            },
-            {
-                $limit: limit
-            },
-            {
                 $lookup: {
                     from: "users",
                     localField: "members",
                     foreignField: "_id",
                     as: "members"
                 }
+            },
+            {
+                $match: {
+                    "members.userName": { $regex: search || "", $options: "i" }
+                }
+            },
+            {
+                $skip: skip
+            },
+            {
+                $limit: limit
             },
             {
                 $project: {
@@ -39,7 +46,7 @@ export const getRoomsList = async (page: number, limit: number, search: string) 
                             as: "member",
                             in: {
                                 _id: "$$member._id",
-                                name: "$$member.name",
+                                userName: "$$member.userName",
                                 image: "$$member.image"
                             }
                         }
@@ -48,8 +55,9 @@ export const getRoomsList = async (page: number, limit: number, search: string) 
             }
         ]);
 
-        return rooms.map((room) => {
-            if(room && room._id) {
+        return rooms
+            .filter(room => room && room._id)
+            .map((room) => {
                 let name = room.name || "";
                 let roomImage = room.roomImage || null;
                 if(!room.isGroup) {
@@ -57,7 +65,7 @@ export const getRoomsList = async (page: number, limit: number, search: string) 
                         (member: {_id: string}) => member._id.toString() !== userId.toString()
                     );
                     if(friend) {
-                        name = friend.name;
+                        name = friend.userName;
                         roomImage = friend.image;
                     }
                 }
@@ -69,10 +77,36 @@ export const getRoomsList = async (page: number, limit: number, search: string) 
                     members: room.members.map((member: {_id: string}) => member._id.toString()),
                     roomImage: roomImage
                 };
-            }
-        });
+            });
         
     } catch (error) {
+        console.log(error);
+        throw new Error("Failed to fetch rooms");
+    }
+}
+
+export const getUserAndTokens = async(roomId: string) => {
+    try {
+        const userInfo = await getChatUserProfile();
+        if (!userInfo) {
+            throw new Error("Unauthorized");
+        }
+
+        const userId = userInfo._id?.toString();
+
+        const room = await Room.findById(roomId);
+        if (!room) {
+            throw new Error("Room not found");
+        }
+
+        const members = room.members.map((memberId: Types.ObjectId) => memberId.toString());
+        if (!members.includes(userId)) {
+            throw new Error("Not a member of this room");
+        }
+
+        const token = signSocketToken({ userId: userId || "", roomId });
+        return { token, userId };
+    } catch(error) {
         console.log(error);
         throw new Error("Failed to fetch rooms");
     }

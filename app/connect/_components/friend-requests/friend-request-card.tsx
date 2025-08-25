@@ -63,12 +63,12 @@ const FriendRequestCard = ({request, removeUser}: FriendRequestCardPropsI) => {
                     <div className='flex gap-4 items-center'>
                         <Image
                             src={request.image}
-                            alt={request.name}
+                            alt={request.userName}
                             className='w-16 h-16 rounded-full'
                             width={64}
                             height={64}
                         />
-                        <h2>{request.name}</h2>
+                        <h2>{request.userName}</h2>
                     </div>
                 </CardContent>
                 <CardFooter className='flex gap-4 justify-end'>

@@ -17,15 +17,15 @@ export const updateLikes = async(postId: string, isLiked: boolean) => {
 export const createCommentQueryOptions = (open: boolean, postId: string) => {
     return {
         queryKey: ["comments", postId],
-        queryFn: () => getComments(postId),
+        queryFn: () => getComments(postId, 1, 10),
         enabled: open,
         staleTime: 30000,
         gcTime: 30000
     }
 }
 
-export const getComments = async(postId: string) => {
-    const res = await fetch(`/api/connect/post/${postId}/comments`, {
+export const getComments = async(postId: string, page: number, limit: number) => {
+    const res = await fetch(`/api/connect/post/${postId}/comments?page=${page}&limit=${limit}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"

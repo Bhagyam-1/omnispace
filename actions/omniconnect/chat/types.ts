@@ -2,7 +2,7 @@ import { Document, Types } from 'mongoose';
 
 export interface IUserRef {
     _id: Types.ObjectId;
-    name: string;
+    userName: string;
     image?: string;
 }
 
@@ -19,7 +19,7 @@ export interface IFormattedMessage {
     id: string;
     sender: {
         id: string;
-        name: string;
+        userName: string;
         image?: string;
     };
     message: string;

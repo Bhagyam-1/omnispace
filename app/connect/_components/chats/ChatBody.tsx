@@ -15,7 +15,7 @@ const ChatBody = ({roomId, initialMessages}: ChatBodyProps) => {
     const [chats, setChats] = useState<IFormattedMessage[]>(initialMessages);
 
     useEffect(() => {
-        let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
+        let socket: Socket<DefaultEventsMap, DefaultEventsMap> | null = null;
 
         const fetchMessages = async() => {
             const res = await fetch(`/api/connect/room/${roomId}/token`, {
@@ -27,14 +27,14 @@ const ChatBody = ({roomId, initialMessages}: ChatBodyProps) => {
             const {token, userId} = await res.json();
             
             socket = getSocket(token);
-            socket.emit("join_room", {roomId});
+            socket?.emit("join_room", {roomId});
 
-            socket.on("message", (data) => {
+            socket?.on("message", (data) => {
                 const newMessage = {
                     ...data,
                     isFriend: data.sender.id === userId
                 }
-                console.log(newMessage);
+                
                 setChats((prevChats) => [...prevChats, newMessage]);
             });
         }
@@ -42,7 +42,7 @@ const ChatBody = ({roomId, initialMessages}: ChatBodyProps) => {
         fetchMessages();
 
         return () => {
-            socket.disconnect();
+            socket?.disconnect();
         }
     }, [roomId]);
 
@@ -60,9 +60,9 @@ const ChatBody = ({roomId, initialMessages}: ChatBodyProps) => {
                                     }`}
                                 >
                                     <p className="text-sm w-fit break-words">{chat.message}</p>
-                                    {/* {chat.senderName && (
+                                    {/* {chat.sender.userName && (
                                         <p className="text-xs mt-1 opacity-70">
-                                            {chat.senderName}
+                                            {chat.sender.userName}
                                         </p>
                                     )} */}
                                 </div>

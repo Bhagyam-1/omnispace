@@ -23,8 +23,9 @@ const ProfilePage = async({params}: {params: Promise<{userName: string}>}) => {
         }
     } else {
         try {
-            const searchedUser = await getUserByUserName(userName);
+            const searchedUser = await getUserByUserName(userName?.[0]);
             user = searchedUser.user;
+            
             isSearchedUser = !searchedUser.isLoggedInUser;
             isFriend = searchedUser?.isFriend;
         } catch (err) {
@@ -35,7 +36,7 @@ const ProfilePage = async({params}: {params: Promise<{userName: string}>}) => {
             }
         }
     }
-    
+
     return (
         <section className="m-auto p-8">
             {
@@ -50,7 +51,7 @@ const ProfilePage = async({params}: {params: Promise<{userName: string}>}) => {
                                 <h3 className='text-center text-2xl text-muted-foreground mt-16'>
                                     You are not friends with this user
                                     <p>
-                                        Add as friend to view profile
+                                        Add as friend to view his posts
                                     </p>
                                 </h3>
                             )

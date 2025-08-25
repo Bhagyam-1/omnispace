@@ -1,9 +1,11 @@
-import FriendsListLoading from "./@list/loading";
+import FriendsListLoader from "./@list/loading";
 
-const MessagesLoading = () => {
+const MessagesLoader = () => {
     return (
-        <FriendsListLoading />
+        <section className="md:hidden flex">
+            <FriendsListLoader />
+        </section>
     )
 }
 
-export default MessagesLoading;
+export default MessagesLoader;

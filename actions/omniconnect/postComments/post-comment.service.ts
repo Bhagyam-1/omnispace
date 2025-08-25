@@ -40,7 +40,6 @@ export const fetchPostComments = async (postId: Types.ObjectId, page: number, li
 
             plainComment.id = plainComment._id?.toString();
 
-            console.log(plainComment);
             plainComment.user = {
                 ...plainComment.userId,
                 _id: plainComment.userId?._id?.toString()

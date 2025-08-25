@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
-const LoadingNews = () => {
+const NewsLoader = () => {
     return (
         <section className="flex flex-col gap-8 w-full my-8">
             <Skeleton className="w-1/2 h-8 rounded-lg p-5" />
@@ -21,4 +21,4 @@ const LoadingNews = () => {
     )
 }
 
-export default LoadingNews;
+export default NewsLoader;

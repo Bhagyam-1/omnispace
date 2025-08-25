@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-const RequestsLoading = () => {
+const RequestsLoader = () => {
     return (
         <section className="w-full h-full px-8 pt-12">
             <div className="flex flex-col gap-12">
@@ -17,4 +17,4 @@ const RequestsLoading = () => {
     )
 }
 
-export default RequestsLoading;
+export default RequestsLoader;

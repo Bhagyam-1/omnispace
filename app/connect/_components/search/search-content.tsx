@@ -9,7 +9,7 @@ import IntersectionTrigger from '@/app/news/_components/news-dashboard/intersect
 import SearchedUsers from './searched-users';
 import NoUser from './no-user';
 import { toast } from 'sonner';
-import SearchLoading from './search-loading';
+import SearchLoader from './search-loader';
 
 const SearchContent = () => {
     const [users, setUsers] = useState<UserI[]>([]);
@@ -68,7 +68,7 @@ const SearchContent = () => {
     }
 
     if(loading && users.length === 0) {
-        return <SearchLoading />
+        return <SearchLoader />
     }
 
     return (
@@ -82,7 +82,7 @@ const SearchContent = () => {
                         <SearchedUsers users={users} removeUser={removeUser} />
                         <IntersectionTrigger onIntersect={fetchUsers} />
                         {
-                            loading && <SearchLoading usersLength={1} />
+                            loading && <SearchLoader usersLength={1} />
                         }
                     </ul>
                 ) : (

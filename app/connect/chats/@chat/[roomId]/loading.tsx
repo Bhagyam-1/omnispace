@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-const ChatLoading = () => {
+const ChatLoader = () => {
     return (
         <section className="flex flex-col gap-4 h-full w-full mt-4">
             <div className="flex gap-2 items-center p-2 md:p-4 mx-4">
@@ -23,4 +23,4 @@ const ChatLoading = () => {
     )
 }
 
-export default ChatLoading;
+export default ChatLoader;

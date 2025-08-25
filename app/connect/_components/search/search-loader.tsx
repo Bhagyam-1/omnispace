@@ -1,7 +1,7 @@
 import React from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 
-const SearchLoading = ({usersLength = 2}: {usersLength?: number}) => {
+const SearchLoader = ({usersLength = 2}: {usersLength?: number}) => {
   return (
     <div className='w-full h-full flex flex-col gap-4 items-center'>
       <div className="mt-8 w-full">
@@ -24,4 +24,4 @@ const SearchLoading = ({usersLength = 2}: {usersLength?: number}) => {
   )
 }
 
-export default SearchLoading;
+export default SearchLoader;

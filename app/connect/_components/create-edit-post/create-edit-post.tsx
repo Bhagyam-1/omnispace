@@ -128,7 +128,7 @@ const CreateEditPost = ({isNewPost = true, postInfo, onUpdatePost}: CreateEditPo
     }
 
     return (
-        <div className="max-w-xl mx-auto p-6 space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-500">
+        <div className="max-w-xl mx-auto p-6 space-y-4 animate-in fade-in duration-300">
             { isNewPost && <h2 className="text-2xl font-semibold">Create a Post</h2> }
             {
                 imageUrl ? (

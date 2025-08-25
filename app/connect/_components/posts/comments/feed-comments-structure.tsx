@@ -53,7 +53,7 @@ const FeedCommentsStructure = ({postId, post}: {postId: string, post: PostI}) =>
                             post?.content?.type === PostType.IMAGE && (
                                 <Image 
                                     src={post?.content?.image?.url || ""} 
-                                    alt={`A post by ${post?.user?.name} with caption ${post?.content?.image?.caption}`}
+                                    alt={`A post by ${post?.user?.userName} with caption ${post?.content?.image?.caption}`}
                                     className='object-contain rounded w-full'
                                     fill
                                 />

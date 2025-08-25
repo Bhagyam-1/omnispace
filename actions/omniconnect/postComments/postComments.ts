@@ -43,12 +43,12 @@ export const addCommentToPost = async (postId: string, comment: string) => {
     }
 }
 
-export const getPostComments = async (postId: string) => {
+export const getPostComments = async (postId: string, page: number, limit: number) => {
     try {
         const postObjectId = new Types.ObjectId(postId);
         await validatePost(postObjectId);
 
-        const comments = await fetchPostComments(postObjectId);
+        const comments = await fetchPostComments(postObjectId, page, limit);
         return comments;
     } catch (error) {
         console.log(error);

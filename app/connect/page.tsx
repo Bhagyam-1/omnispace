@@ -1,13 +1,12 @@
 export const dynamic = "force-dynamic";
 
-import React, { Fragment } from 'react'
-import FeedCard from './_components/posts/feed-card';
-import { Separator } from '@/components/ui/separator';
+import React from 'react';
 import { getPosts } from '@/actions/omniconnect/posts/post';
 import { Grid2X2X } from 'lucide-react';
+import FeedPosts from './_components/posts/feed-posts';
 
 const ChatsHomePage = async() => {
-  const posts = await getPosts();
+  const posts = await getPosts(1, 6);
 
   if(posts.length === 0) {
     return (
@@ -20,20 +19,7 @@ const ChatsHomePage = async() => {
 
   return (
     <section className='flex flex-col items-center gap-8 p-0 xs:p-8'>
-      {
-        posts?.map((post, postIndex) => (
-          post && (
-            <Fragment key={post._id}>
-              <FeedCard post={post} />
-              {
-                  postIndex !== posts?.length - 1 && (
-                      <Separator className='xs:!w-[475px]' />
-                  )
-              }
-            </Fragment>
-          )
-        ))
-      }
+      <FeedPosts initialPosts={posts} />
     </section>
   )
 }

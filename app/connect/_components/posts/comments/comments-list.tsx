@@ -1,29 +1,38 @@
 "use client";
 
-// import IntersectionTrigger from "@/app/news/_components/news-dashboard/intersection-trigger";
 import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CommentsI } from "@/app/connect/_utils/types";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { addCommentHandler } from "../../../_services/feed-post.service";
+import { addCommentHandler, getComments } from "../../../_services/feed-post.service";
 import Image from "next/image";
 import { getUserInfo } from "../../../_services/storage.service";
+import IntersectionTrigger from "@/app/news/_components/news-dashboard/intersection-trigger";
+import { Loader } from "lucide-react";
 
 const CommentsList = ({initialComments, postId}: {initialComments: CommentsI[], postId: string}) => {
     const [comments, setComments] = useState(initialComments || []);
-    // const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(2);
+    const [loading, setLoading] = useState(false);
+    const lastPageCommentsLengthRef = useRef(initialComments.length);
+
     const isMobile = useIsMobile();
     const commentRef = useRef<HTMLInputElement>(null);
 
     const userInfo = getUserInfo();
     
-    // const handleIntersect = async() => {
-    //     setLoading(true);
-    //     const newComments = await getComments(postId);
-    //     setComments([...comments, ...newComments]);
-    //     setLoading(false);
-    // }
+    const fetchComments = async() => {
+        if(lastPageCommentsLengthRef.current < 10) {
+            return;
+        }
+        setLoading(true);
+        setPage((prev) => prev + 1);
+        const newComments = await getComments(postId, page, 10);
+        setComments((prev) => [...prev, ...newComments]);
+        lastPageCommentsLengthRef.current = newComments.length;
+        setLoading(false);
+    }
 
     const addComment = async() => {
         const comment = commentRef.current?.value;
@@ -64,7 +73,12 @@ const CommentsList = ({initialComments, postId}: {initialComments: CommentsI[], 
                                 </li>
                             ))
                         }
-                        {/* <IntersectionTrigger onIntersect={handleIntersect} /> */}
+                        <IntersectionTrigger onIntersect={fetchComments} />
+                        {
+                            loading && (
+                                <Loader className="animate-spin" />
+                            )
+                        }
                     </ul>
                 ) : (
                     <p className='my-12 text-center text-sm my-auto'>No comments</p>

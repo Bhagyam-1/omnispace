@@ -26,17 +26,21 @@ const doesConnectionExist = async (postUserId: Types.ObjectId, userId: Types.Obj
     }
 }
 
-export const fetchPostComments = async (postId: Types.ObjectId) => {
+export const fetchPostComments = async (postId: Types.ObjectId, page: number, limit: number) => {
     try {
         const comments = await PostComment.find({ postId })
             .populate("userId", ["userName", "image"])
             .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit)
             .lean();
         
         const plainComments = comments.map((comment) => {
             const plainComment = comment;
 
             plainComment.id = plainComment._id?.toString();
+
+            console.log(plainComment);
             plainComment.user = {
                 ...plainComment.userId,
                 _id: plainComment.userId?._id?.toString()

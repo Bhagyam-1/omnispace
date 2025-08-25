@@ -33,10 +33,10 @@ const SearchContent = () => {
                         setUsers(prev => [...prev, ...newUsers]);
                     }
                     lastPageUsersLengthRef.current = newUsers.length; // ref instead of state
-                    setLoading(false);
                 }
             } catch (err) {
                 toast.error(err instanceof Error ? err.message : "Failed to fetch users");
+            } finally {
                 setLoading(false);
             }
         };
@@ -67,7 +67,7 @@ const SearchContent = () => {
         setUsers((prev) => prev.filter((_, currIndex) => currIndex !== userIndex));
     }
 
-    if(loading) {
+    if(loading && users.length === 0) {
         return <SearchLoading />
     }
 
@@ -81,6 +81,9 @@ const SearchContent = () => {
                     <ul className='w-full max-h-[calc(100vh-16rem)] md:max-h-[calc(100vh-18rem)] overflow-y-auto gap-4'>
                         <SearchedUsers users={users} removeUser={removeUser} />
                         <IntersectionTrigger onIntersect={fetchUsers} />
+                        {
+                            loading && <SearchLoading usersLength={1} />
+                        }
                     </ul>
                 ) : (
                     <NoUser />

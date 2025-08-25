@@ -22,7 +22,7 @@ const renderMenuContent = (item: SidebarItemI, open: boolean) => {
         <Dialog>
           <DialogTrigger asChild>
             <Button
-              className={`flex items-center justify-start !p-[6px] w-full h-8 rounded-md hover:bg-sidebar-accent bg-transparent text-sidebar-foreground cursor-pointer`}
+              className={`flex items-center justify-start !p-[6px] w-full h-8 rounded-md hover:bg-sidebar-accent bg-transparent shadow-none text-sidebar-foreground cursor-pointer`}
             >
               <item.icon className="!h-4 !w-4" />
               <span className={`truncate ${!open && "opacity-0"} transition-opacity`}> {item.title} </span>

@@ -30,7 +30,7 @@ export const getChats = async (
         }
 
         const chats = await Chat.find({ roomId: new Types.ObjectId(roomId) })
-            .populate<{ messages: Array<{ senderId: IUserRef }> }>("senderId", "name image")
+            .populate<{ messages: Array<{ senderId: IUserRef }> }>("senderId", "userName image")
             .skip((page - 1) * limit)
             .limit(limit)
             .lean() as IChat[] | null;
@@ -46,7 +46,7 @@ export const getChats = async (
                 id: chat._id.toString(),
                 sender: {
                     id: senderId,
-                    name: (chat.senderId as IUserRef).name,
+                    userName: (chat.senderId as IUserRef).userName,
                     image: (chat.senderId as IUserRef).image
                 },
                 message: chat.message,

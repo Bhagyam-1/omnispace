@@ -8,7 +8,7 @@ import { extractPostContent, getUserLikesFromPosts, getUserSavesFromPosts } from
 import { getUserByUserName } from "../users/users";
 import { ObjectId } from "mongoose";
 
-export const getPosts = async () => {
+export const getPosts = async (page: number, limit: number) => {
     try {
         const user = await getChatUserProfile();
         const userId = user._id;
@@ -16,6 +16,8 @@ export const getPosts = async () => {
         const posts = await Post.find()
             .populate("userId", ["userName", "image"])
             .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit)
             .lean();
         
         const postIds = posts.map(post => post._id);
@@ -43,6 +45,8 @@ export const getPosts = async () => {
                 hasUserSaved
             }
         })
+
+        console.log(enrichedPosts);
 
         return enrichedPosts;
     } catch (error) {

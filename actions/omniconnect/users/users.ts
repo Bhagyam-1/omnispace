@@ -120,8 +120,14 @@ export const getUserByUserName = async(userName: string) => {
     try {
         const user = await getChatUserProfile();
         if(user.userName === userName) {
-            user._id = user?._id?.toString();
-            return { user, isLoggedInUser: true, isFriend: true };
+            const plainUser = {
+                _id: user._id?.toString(),
+                name: user.name,
+                userName: user.userName,
+                image: user.image,
+                bio: user.bio
+            }
+            return { user: plainUser, isLoggedInUser: true, isFriend: true };
         }
 
         const searchedUser = await User.findOne({ userName }).select("_id name userName image").lean<LeanSearchUser>();
@@ -129,7 +135,7 @@ export const getUserByUserName = async(userName: string) => {
         const connection = await areUsersFriends(user._id, new Types.ObjectId(searchedUser?._id));
 
         if(searchedUser) {
-            searchedUser._id = searchedUser?._id;
+            searchedUser._id = searchedUser?._id.toString();
             return { user: searchedUser, isLoggedInUser: false, isFriend: connection };
         }
 
@@ -144,8 +150,6 @@ export const getNotConnectedUsers = async(page: number, limit: number, search: s
         const user = await getChatUserProfile();
         const userId = user._id;
 
-        await dbConnect();
-
         const allConnections = await getAllConnections();
 
         const hasConnections = new Set<string>();
@@ -158,14 +162,14 @@ export const getNotConnectedUsers = async(page: number, limit: number, search: s
         const connections = Array.from(hasConnections)
         .map((id) => new Types.ObjectId(id));
 
-        connections.push(new Types.ObjectId(userId));
+        connections.push(new Types.ObjectId(userId as string));
 
         const skip = (page - 1) * limit;
 
         const rawNotConnectedUsers = await User.find({
             $and: [
                 { _id: { $nin: connections } },
-                { name: { $regex: search, $options: "i" } }
+                { userName: { $regex: search, $options: "i" } }
             ]
         })
         .skip(skip)

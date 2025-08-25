@@ -18,15 +18,17 @@ const ProfileTabs = ({userName, isSearchedUser}: ProfileTabsProps) => {
         <Tabs defaultValue="posts" className='mt-4 sm:mt-0 sm:px-12 lg:px-24' onValueChange={setActiveTab}>
             <TabsList className='flex items-center gap-2 bg-transparent w-full p-0'>
             {
-                tabsInfo.map((tab) => (
-                    <TabsTrigger
-                        key={tab.value}
-                        value={tab.value}
-                        className='text-lg font-semibold px-8 py-5 border-none bg-transparent cursor-pointer'
-                    >
-                        <tab.icon /> {tab.label}
-                    </TabsTrigger>
-                ))
+                tabsInfo
+                    .filter((tab) => isSearchedUser && tab.value !== "saved" || !isSearchedUser)
+                    .map((tab) => (
+                        <TabsTrigger
+                            key={tab.value}
+                            value={tab.value}
+                            className={`text-lg font-semibold px-8 py-5 cursor-pointer ${activeTab === tab.value ? "!bg-input !shadow-none border-none" : ""}`}
+                        >
+                            <tab.icon /> {tab.label}
+                        </TabsTrigger>
+                    ))
             }
         </TabsList>
         {

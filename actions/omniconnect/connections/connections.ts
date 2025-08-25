@@ -10,43 +10,81 @@ import Room from "../room/roomModel";
 
 export const getFriends = async(page: number, limit: number, search: string) => {
     const skip = (page - 1) * limit;
-    const USER_SAFE_DATA = ["id", "name", "image"];
-    
+
     try {
         const user = await getChatUserProfile();
-        const userId = new Types.ObjectId(user._id);
+        const userId = user._id;
+        
+        const friends = await Connection.aggregate([
+            {
+              $match: {
+                $or: [
+                    { fromUserId: userId },
+                    { toUserId: userId }
+                ],
+                status: "accepted"
+              }
+            },
+            // Lookup both users
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "fromUserId",
+                    foreignField: "_id",
+                    as: "fromUser"
+                }
+            },
+            { $unwind: "$fromUser" },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "toUserId",
+                    foreignField: "_id",
+                    as: "toUser"
+                }
+            },
+            { $unwind: "$toUser" },
+          
+            // Pick "friend" field depending on who is the other user
+            {
+                $addFields: {
+                    friend: {
+                        $cond: {
+                            if: { $eq: ["$fromUser._id", userId] },
+                            then: "$toUser",
+                            else: "$fromUser"
+                        }
+                    }
+                }
+            },
+          
+            // Search by name if provided
+            ...(search
+              ? [{ $match: { "friend.userName": { $regex: search, $options: "i" } } }]
+              : []),
+          
+            // Pagination
+            { $skip: skip },
+            { $limit: limit },
+          
+            // Final shape
+            {
+                $project: {
+                    connectionId: "$_id",
+                    id: "$friend._id",
+                    userName: "$friend.userName",
+                    image: "$friend.image"
+                }
+            }
+        ]);
 
-        const friends = await Connection.find({
-            $or: [
-                { fromUserId: userId }, 
-                { toUserId: userId }
-            ],
-            status: "accepted"
-        })
-        .populate("fromUserId", USER_SAFE_DATA)
-        .populate("toUserId", USER_SAFE_DATA)
-        .skip(skip)
-        .limit(limit);
-
-        const allFriendsInfo = friends.map((friend) => {
-            if(friend.fromUserId._id.toString() === user._id.toString()) {
-                return {
-                    id: friend.toUserId._id.toString(),
-                    name: friend.toUserId.name,
-                    image: friend.toUserId.image,
-                    connectionId: friend._id.toString()
-                };
-            } 
-
-            return {
-                id: friend.fromUserId._id.toString(),
-                name: friend.fromUserId.name,
-                image: friend.fromUserId.image,
-                connectionId: friend._id.toString()
-            };
-        });
-
-        return allFriendsInfo;
+        return friends.map((friend) => ({
+                connectionId: friend.connectionId?.toString(),
+                id: friend.id?.toString(),
+                userName: friend.userName,
+                image: friend.image
+            })
+        );
     } catch (error) {
         throw new Error("Failed to fetch friends");
     }
@@ -54,28 +92,51 @@ export const getFriends = async(page: number, limit: number, search: string) => 
 
 export const getFriendRequests = async(page: number, limit: number, search: string) => {
     const skip = (page - 1) * limit;
-    const USER_SAFE_DATA = ["id", "name", "image"];
 
     try {
         const user = await getChatUserProfile();
-        const userId = new Types.ObjectId(user._id);
+        const userId = user._id;
 
-        const requests = await Connection.find({
-            toUserId: userId,
-            status: "pending"
-        }).populate("fromUserId", USER_SAFE_DATA)
-        .skip(skip)
-        .limit(limit);
-
-        return requests.map((request) => {
-            return {
-                id: request.fromUserId._id.toString(),
-                name: request.fromUserId.name,
-                image: request.fromUserId.image,
-                connectionId: request._id.toString()
+        const requests = await Connection.aggregate([
+            {
+                $match: {
+                    toUserId: userId,
+                    status: "pending"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "fromUserId",
+                    foreignField: "_id",
+                    as: "fromUser"
+                }
+            },
+            { $unwind: "$fromUser" },
+            {
+                $match: search
+                    ? { "fromUser.userName": {$regex: search, $options: "i"} }
+                    : {}
+            },
+            {
+                $skip: skip
+            },
+            {
+                $limit: limit
+            },
+            {
+                $project: {
+                    connectionId: "$_id",
+                    id: "$fromUser._id",
+                    userName: "$fromUser.userName",
+                    image: "$fromUser.image"
+                }
             }
-        });
+        ])
+
+        return requests;
     } catch (error) {
+        console.log(error);
         throw new Error("Failed to fetch friend requests");
     }
 }
@@ -188,7 +249,7 @@ export const getFriendsLength = async(userName: string) => {
     try {
         await dbConnect();
         const userProfile = await getUserByUserName(userName);
-        const userId = new Types.ObjectId(userProfile?.user?._id);
+        const userId = new Types.ObjectId(userProfile?.user?._id as string);
 
         const friendsCount = await Connection.countDocuments({
             $or: [{fromUserId: userId}, {toUserId: userId}],
@@ -205,7 +266,7 @@ export const getRequestsLength = async(userName: string) => {
     try {
         await dbConnect();
         const userProfile = await getUserByUserName(userName);
-        const userId = new Types.ObjectId(userProfile?.user?._id);
+        const userId = new Types.ObjectId(userProfile?.user?._id as string);
 
         const requestsCount = await Connection.countDocuments({
             toUserId: userId,
@@ -222,7 +283,7 @@ export const getPostsLength = async(userName: string) => {
     try {
         await dbConnect();
         const userProfile = await getUserByUserName(userName);
-        const userId = new Types.ObjectId(userProfile?.user?._id);
+        const userId = new Types.ObjectId(userProfile?.user?._id as string);
 
         const postsCount = await Post.countDocuments({
             userId

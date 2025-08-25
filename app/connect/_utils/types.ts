@@ -1,20 +1,20 @@
 export interface FriendI {
     id: number;
-    name: string;
+    userName: string;
     image: string;
     connectionId: string;
 }
 
 export interface FriendRequestI {
     id: number;
-    name: string;
+    userName: string;
     image: string;
     connectionId: string;
 }
 
 export interface UserI {
     _id: string,
-    userId: string,
+    userId?: string,
     userName: string,
     name: string,
     bio?: string,
@@ -22,7 +22,10 @@ export interface UserI {
     image: string,
 }
 
+// export type SearchedUserI = Omit<UserI, "userId">;
+
 export type TabValue = "posts" | "saved";
+
 export type TabInfo = {
     value: TabValue;
     label: string;
@@ -77,7 +80,7 @@ export interface IFormattedMessage {
     id: string;
     sender: {
         id: string;
-        name: string;
+        userName: string;
         image?: string;
     };
     message: string;

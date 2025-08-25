@@ -11,7 +11,7 @@ import Image from 'next/image';
 import { setUserInfo } from '@/app/connect/_services/storage.service';
 
 interface UserProfileBodyProps {
-    user: UserI;
+    user: UserI ;
     setOpen?: (open: boolean) => void;
 }
 

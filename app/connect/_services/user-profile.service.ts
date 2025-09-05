@@ -26,22 +26,6 @@ export const updateUserProfile = async(formData: FormData) => {
     return await res.json();
 }
 
-export const fetchPosts = async(userName: string) => {
-    const res = await fetch(`/api/connect/profile/posts/${userName}`);
-    if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    return await res.json();
-}
-
-export const fetchSavedPosts = async() => {
-    const res = await fetch(`/api/connect/profile/saved-posts`);
-    if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    return await res.json();
-}
-
 export const getPostsQueryOptions = (activeTab: string, userName?: string) => {
     if(activeTab === "posts") {
         return {
@@ -60,4 +44,31 @@ export const getPostsQueryOptions = (activeTab: string, userName?: string) => {
         enabled: activeTab === "saved",
         onError: () => toast.error("Failed to fetch saved posts")
     }
+}
+
+export const fetchPosts = async(userName: string) => {
+    const res = await fetch(`/api/connect/profile/posts/${userName}`);
+    if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return await res.json();
+}
+
+export const fetchSavedPosts = async() => {
+    const res = await fetch(`/api/connect/profile/saved-posts`);
+    if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return await res.json();
+}
+
+export const deletePost = async(postId: string) => {
+    const res = await fetch(`/api/connect/post/delete/${postId}`, {
+        method: "DELETE",
+    })
+
+    if(!res.ok)
+        throw new Error("Failed to delete post");
+
+    return await res.json();
 }

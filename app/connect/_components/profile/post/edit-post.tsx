@@ -6,12 +6,17 @@ import CreateEditPost from '../../create-edit-post/create-edit-post'
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Edit } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 
 const EditPost = ({postInfo}: {postInfo: PostI}) => {
     const [open, setOpen] = useState(false);
-
+    const queryClient = useQueryClient();
+    
     const onUpdatePost = () => {
         setOpen(false);
+        queryClient.invalidateQueries({
+            queryKey: ["posts", postInfo?.user?.userName],
+        });
     }
     
   return (

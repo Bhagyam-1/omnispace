@@ -20,6 +20,7 @@ export interface UserI {
     bio?: string,
     email?: string,
     image: string,
+    isUserNameSet?: boolean
 }
 
 // export type SearchedUserI = Omit<UserI, "userId">;

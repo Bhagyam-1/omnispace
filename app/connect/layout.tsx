@@ -27,7 +27,7 @@ const ChatLayout = async({children}: {children: React.ReactNode}) => {
             <Header showSidebar={true} />
             <main className="h-full rounded-xl">
               {
-                user?.userName ?
+                user?.isUserNameSet ?
                  children :
                  <CompleteUserProfile user={user} />
               }

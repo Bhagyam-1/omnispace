@@ -20,17 +20,17 @@ export const getLoggedInUser = async() => {
         const firstName = user.firstName || user.emailAddresses[0].emailAddress.split("@")[0];
         const lastName = user.lastName || "";
         const name = `${firstName} ${lastName}`;
-
+        const username = `user_${Date.now().toString(36)}_${Math.floor(Math.random() * 1000)}`;
         if(!userInfo) {
             const newUser = await User.create({
-                userName: "",
+                userName: username,
                 userId: user.id,
                 name: name,
                 email: user.emailAddresses[0].emailAddress,
                 image: user.imageUrl
             });
 
-            userInfo = newUser.toObject();
+            userInfo = { ...newUser.toObject(), isUserNameSet: false };
         }
 
         if(userInfo) {
@@ -41,7 +41,8 @@ export const getLoggedInUser = async() => {
                 name: userInfo.name,
                 email: userInfo.email,
                 image: userInfo.image,
-                bio: userInfo.bio
+                bio: userInfo.bio,
+                isUserNameSet: userInfo.isUserNameSet
             }
         }
     }
@@ -73,7 +74,8 @@ export const updateUserProfile = async(formData: FormData) => {
             name: formData.get("name") as string,
             userName: formData.get("userName") as string,
             bio: formData.get("bio") as string,
-            image: user.image
+            image: user.image,
+            isUserNameSet: true
         }
 
         if(formData.get("imageRemoved") === "true") {

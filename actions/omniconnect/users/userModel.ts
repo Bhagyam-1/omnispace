@@ -23,6 +23,10 @@ const userSchema = new Schema({
     },
     image: {
         type: String
+    },
+    isUserNameSet: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

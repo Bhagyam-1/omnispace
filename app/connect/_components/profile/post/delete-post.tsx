@@ -1,30 +1,38 @@
 import { AlertDialog, AlertDialogCancel, AlertDialogDescription, AlertDialogContent, AlertDialogTrigger, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import React, { useState } from 'react'
-import { deletePost } from '@/actions/omniconnect/posts/post'
-import { toast } from 'sonner'
-import { PostI } from '@/app/connect/_utils/types'
+import { Button } from '@/components/ui/button';
+import React, { useState } from 'react';
+import { toast } from 'sonner';
+import { PostI } from '@/app/connect/_utils/types';
 import { Loader2, Trash } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { deletePost } from '@/app/connect/_services/user-profile.service';
 
 const DeletePost = ({post}: {post: PostI}) => {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
-    
-    const deletePostHandler = async() => {
-        try {
-            setLoading(true);
-            await deletePost(post._id);
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+        mutationFn: deletePost,
+        onSuccess: () => {
             setOpen(false);
             toast.success("Post deleted successfully");
-        } catch (error) {
-            if(error instanceof Error) {
-                toast.error(error.message);
-            } else {
-                toast.error("Failed to delete post, please try again");
-            }
-        } finally {
+            queryClient.invalidateQueries({
+                queryKey: ["posts", post?.user?.userName],
+            });
+        },
+        onError: () => {
+            toast.error("Failed to delete post, please try again");
+        },
+        onSettled: () => {
             setLoading(false);
         }
+    });
+    
+    const deletePostHandler = () => {
+        setLoading(true);
+        mutation.mutate(post._id);
     }
 
     return (

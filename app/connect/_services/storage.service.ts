@@ -12,11 +12,11 @@ export const setUserInfo = (user: UserI) => {
         image: user.image
     };
 
-    localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfoToStore));
+    localStorage?.setItem(USER_INFO_KEY, JSON.stringify(userInfoToStore));
 }
 
 export const getUserInfo = () => {
-    const userInfo = localStorage.getItem(USER_INFO_KEY);
+    const userInfo = localStorage?.getItem(USER_INFO_KEY);
 
     if(!userInfo)
         return null;
@@ -25,7 +25,7 @@ export const getUserInfo = () => {
 }
 
 export const removeUserInfo = () => {
-    localStorage.removeItem(USER_INFO_KEY);
+    localStorage?.removeItem(USER_INFO_KEY);
 }
 
 
@@ -42,11 +42,11 @@ export const setChatRoomInfo = (room: RoomI) => {
         roomImage: room.roomImage
     };
 
-    localStorage.setItem(CHAT_ROOM_INFO_KEY, JSON.stringify(chatRoomInfoToStore));
+    localStorage?.setItem(CHAT_ROOM_INFO_KEY, JSON.stringify(chatRoomInfoToStore));
 }
 
 export const getChatRoomInfo = () => {
-    const chatRoomInfo = localStorage.getItem(CHAT_ROOM_INFO_KEY);
+    const chatRoomInfo = localStorage?.getItem(CHAT_ROOM_INFO_KEY);
 
     if(!chatRoomInfo)
         return null;
@@ -55,5 +55,5 @@ export const getChatRoomInfo = () => {
 }
 
 export const removeChatRoomInfo = () => {
-    localStorage.removeItem(CHAT_ROOM_INFO_KEY);
+    localStorage?.removeItem(CHAT_ROOM_INFO_KEY);
 }

@@ -9,6 +9,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Omnispace",
   description: "Get all the fun of space in one place",
+  icons: {
+    icon: "/favicon.ico",   // standard favicon
+    apple: "/apple.png",     // for iOS devices
+  },
 };
 
 export default function RootLayout({

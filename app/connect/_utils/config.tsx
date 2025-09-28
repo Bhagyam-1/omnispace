@@ -44,4 +44,4 @@ export const sidebarItems: SidebarItemI[] = [
 export const tabsInfo: TabInfo[] = [
     { value: "posts", label: "Posts", icon: Grid2X2Plus, noDataMessage: "No post created", noDataIcon: Grid2X2X },
     { value: "saved", label: "Saved", icon: Bookmark, noDataMessage: "No saved posts found", noDataIcon: BookmarkX }
-]
+];

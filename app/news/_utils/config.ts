@@ -1,5 +1,5 @@
 import { Award, Bot, Building2, Drama, ChartColumnStacked, CircleSmall, Languages, Earth, HeartPulse, Microscope, Vote, Salad, PlaneTakeoff } from "lucide-react";
-import { NewsArticleCategory, NewsArticleI } from "./types";
+import { NewsArticleCategory } from "./types";
 
 const categories = [
   {name: "Business", icon: Building2},

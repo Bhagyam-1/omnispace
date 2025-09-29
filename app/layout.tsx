@@ -11,8 +11,9 @@ export const metadata: Metadata = {
   description: "Get all the fun of space in one place",
   icons: {
     icon: "/favicon.ico",   // standard favicon
-    apple: "/apple.png",     // for iOS devices
+    apple: "/apple-touch-icon.png",     // for iOS devices
   },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
